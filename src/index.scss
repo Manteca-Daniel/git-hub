@@ -37,7 +37,30 @@
   margin-top: 10px;
 }
 
+.repo-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.repo-item {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+
+.repo-item a {
+  color: #1f6feb;
+  text-decoration: none;
+}
+
 .home-container {
   text-align: center;
   padding: 20px;
+}
+
+.button.delete {
+  background-color: #d9534f;
+  margin-left: 10px;
 }
