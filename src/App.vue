@@ -1,9 +1,10 @@
 <template>
 
-<header class="app-header">
+  <header class="app-header">
     <h1>GitHub Insights</h1>
     <nav>
       <router-link to="/">Inicio</router-link>
+      <router-link to="/search">Buscar Repositorios</router-link>
     </nav>
   </header>
 
