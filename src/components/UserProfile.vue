@@ -11,10 +11,13 @@
         <ul class="repo-list">
             <li v-for="repo in repos" :key="repo.id" class="repo-item">
                 <h4>{{ repo.name }}</h4>
-                <p>{{ repo.description || 'Sin descripción' }}</p>
+                <p v-if="!repo.editing">{{ repo.description || 'Sin descripción' }}</p>
+                <input v-else v-model="repo.newDescription" placeholder="Nueva descripción" class="input" />
                 <a :href="repo.html_url" target="_blank">Ver en GitHub</a>
                 <button @click="deleteRepo(repo.name)" class="button delete">Eliminar</button>
                 <router-link :to="`/repo/${repo.name}`" class="button details" style="color: white;">Ver detalles</router-link>
+                <button v-if="!repo.editing" @click="editDescription(repo)" class="button edit">Editar Descripción</button>
+                <button v-else @click="saveDescription(repo)" class="button save">Guardar</button>
             </li>
         </ul>
     </div>
@@ -30,13 +33,28 @@ const repos = computed(() => authStore.repos);
 const logout = () => authStore.logout();
 
 const newRepoName = ref('');
-const createRepo = () => {
+const createRepo = async () => {
     if (newRepoName.value.trim()) {
-        authStore.createRepo(newRepoName.value.trim());
+        await authStore.createRepo(newRepoName.value.trim());
         newRepoName.value = '';
     }
 };
-const deleteRepo = (repoName) => {
-    authStore.deleteRepo(repoName);
+const deleteRepo = async (repoName) => {
+    await authStore.deleteRepo(repoName);
+};
+
+const editDescription = (repo) => {
+    repo.editing = true;
+    repo.newDescription = repo.description;
+};
+
+const saveDescription = async (repo) => {
+    try {
+        await authStore.updateRepoDescription(repo.name, repo.newDescription);
+        repo.description = repo.newDescription;
+        repo.editing = false;
+    } catch (error) {
+        console.error("Error actualizando la descripción:", error);
+    }
 };
 </script>

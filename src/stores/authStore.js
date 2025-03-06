@@ -28,24 +28,6 @@ export const useAuthStore = defineStore("auth", {
         localStorage.setItem('favorite_repos', JSON.stringify(this.favoriteRepos));
       }
     },
-    async createIssue(owner, repo, title, body) {
-      try {
-        const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/issues`, {
-          method: 'POST',
-          headers: {
-            Authorization: `token ${this.token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            title: title,
-            body: body,
-          }),
-        });
-        return await response.json();
-      } catch (error) {
-        console.error('Error al crear el issue:', error);
-      }
-    },
     async loginWithToken(token) {
       this.token = token;
       localStorage.setItem("github_token", token);
@@ -81,6 +63,34 @@ export const useAuthStore = defineStore("auth", {
         localStorage.setItem("github_repos", JSON.stringify(this.repos));
       } catch (error) {
         console.error("Error al obtener repositorios:", error);
+      }
+    },
+
+    async updateRepoDescription(repoName, newDescription) {
+      const token = this.token; // Asegúrate de que tienes el token almacenado
+      if (!token) {
+        console.error("No hay token de autenticación");
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://api.github.com/repos/${this.user.login}/${repoName}`, {
+          method: "PATCH",
+          headers: {
+            "Authorization": `token ${token}`,
+            "Accept": "application/vnd.github.v3+json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ description: newDescription })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error al actualizar descripción: ${response.statusText}`);
+        }
+
+        console.log(`Descripción de ${repoName} actualizada correctamente.`);
+      } catch (error) {
+        console.error("Error en la actualización:", error);
       }
     },
     async fetchRepoDetails(repoName) {
@@ -222,6 +232,60 @@ export const useAuthStore = defineStore("auth", {
         console.error("Error al eliminar el repositorio:", error);
       }
     },
+
+    async starRepo(repoOwner, repoName) {
+      try {
+        const response = await fetch(
+          `https://api.github.com/user/starred/${repoOwner}/${repoName}`,
+          {
+            method: "PUT",
+            headers: {
+              Authorization: `token ${this.token}`,
+              "Content-Length": 0, // GitHub requiere esto en la cabecera
+            },
+          }
+        );
+    
+        if (response.status === 204) {
+          console.log("Repositorio marcado como favorito con éxito.");
+        } else {
+          throw new Error("No se pudo dar star al repositorio.");
+        }
+      } catch (error) {
+        console.error("Error al dar star al repositorio:", error);
+      }
+    },
+
+    async createIssue(repoOwner, repoName, issueTitle, issueBody) {
+      try {
+        const response = await fetch(
+          `https://api.github.com/repos/${repoOwner}/${repoName}/issues`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `token ${this.token}`,
+              "Accept": "application/vnd.github.v3+json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              title: issueTitle,
+              body: issueBody,
+            }),
+          }
+        );
+    
+        if (!response.ok) {
+          throw new Error(`Error al crear el issue: ${response.statusText}`);
+        }
+    
+        console.log(`Issue creado en ${repoName}: ${issueTitle}`);
+        alert("¡Issue creado con éxito!");
+      } catch (error) {
+        console.error("Error al crear el issue:", error);
+        alert("Hubo un error al crear el issue.");
+      }
+    },    
+    
 
     logout() {
       this.token = "";
