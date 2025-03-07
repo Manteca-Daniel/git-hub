@@ -58,3 +58,140 @@ const saveDescription = async (repo) => {
     }
 };
 </script>
+
+<style lang="scss" scoped>
+$primary-color: #1f6feb;
+$dark-color: #2c3e50;
+$light-color: #f4f4f4;
+$danger-color: #d9534f;
+$border-radius: 8px;
+
+.profile-container {
+  padding: 20px;
+  text-align: center;
+  background: white;
+  border-radius: $border-radius;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: auto;
+}
+
+.profile-title {
+  font-size: 1.8rem;
+  color: $dark-color;
+  margin-bottom: 10px;
+}
+
+.profile-bio {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+  border: 3px solid $primary-color;
+}
+
+.button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: $border-radius;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  &.logout {
+    background: $danger-color;
+    color: white;
+  }
+
+  &.delete {
+    background: $danger-color;
+    color: white;
+  }
+
+  &.edit {
+    background: #f39c12;
+    color: white;
+  }
+
+  &.save {
+    background: #27ae60;
+    color: white;
+  }
+
+  &.details {
+    background: $primary-color;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    padding: 8px 12px;
+  }
+}
+
+.repo-title {
+  font-size: 1.5rem;
+  color: $dark-color;
+  margin-top: 20px;
+}
+
+.repo-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.input {
+  width: 100%;
+  max-width: 300px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: $border-radius;
+}
+
+.repo-list {
+  list-style: none;
+  padding: 0;
+}
+
+.repo-item {
+  background: $light-color;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: $border-radius;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  .repo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .repo-link {
+    color: $primary-color;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .repo-description {
+    color: #555;
+    margin: 10px 0;
+  }
+
+  .repo-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+}
+
+</style>
