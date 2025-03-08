@@ -3,6 +3,12 @@
         <h2 class="repo-title">{{ repoDetails.name }}</h2>
         <p class="repo-description">{{ repoDetails.description || 'Sin descripción' }}</p>
 
+        <!-- Sección de Gráfico -->
+        <section class="repo-section">
+            <h3>Resumen del Repositorio</h3>
+            <RepoChart :issues="issues" :pullRequests="pullRequests" :commits="commits" />
+        </section>
+
         <section class="repo-section">
             <h3>Issues</h3>
             <ul class="repo-list">
@@ -37,28 +43,39 @@
     </div>
 </template>
 
-
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useAuthStore } from '../stores/authStore';
 import { useRoute } from 'vue-router';
+import { useToast } from 'vue-toastification';
+import RepoChart from './RepoChart.vue';
 
 const authStore = useAuthStore();
 const route = useRoute();
+const toast = useToast();
+
 const repoDetails = computed(() => authStore.repoDetails);
 const issues = computed(() => authStore.issues);
 const pullRequests = computed(() => authStore.pullRequests);
 const commits = computed(() => authStore.commits);
 const newBranch = ref('');
 
-onMounted(() => {
-    authStore.fetchRepoDetails(route.params.repoName);
+onMounted(async () => {
+    try {
+        await authStore.fetchRepoDetails(route.params.repoName);
+        toast.success("📦 Repositorio cargado correctamente!");
+    } catch (error) {
+        toast.error("❌ Error al cargar el repositorio.");
+    }
 });
 
 const createBranch = () => {
     if (newBranch.value.trim()) {
         authStore.createBranch(route.params.repoName, newBranch.value.trim());
+        toast.success(`✅ Rama "${newBranch.value}" creada con éxito!`);
         newBranch.value = '';
+    } else {
+        toast.error('⚠️ El nombre de la rama no puede estar vacío');
     }
 };
 </script>
