@@ -1,24 +1,26 @@
 <template>
-  <header class="app-header">
-    <h1>GitHub Insights</h1>
-    <nav>
-      <router-link to="/">Inicio</router-link>
-      <router-link v-if="authStore.user" to="/search">Buscar Repositorios</router-link>
-      <router-link v-else to="/token">Obtener Token</router-link>
-    </nav>
-  </header>
+  <div class="container-total">
+    <header class="app-header">
+      <h1>GitHub Insights</h1>
+      <nav>
+        <router-link to="/">Inicio</router-link>
+        <router-link v-if="authStore.user" to="/search">Buscar Repositorios</router-link>
+        <router-link v-else to="/token">Obtener Token</router-link>
+      </nav>
+    </header>
 
-  <main>
-    <RouterView />
-  </main>
+    <main>
+      <RouterView />
+    </main>
 
-  <footer class="app-footer">
-    <p>&copy; 2025 GitHub Insights. Todos los derechos reservados.</p>
-  </footer>
+    <footer class="app-footer">
+      <p>&copy; 2025 GitHub Insights. Todos los derechos reservados.</p>
+    </footer>
+  </div>
 </template>
 
 <script setup>
-import { useAuthStore } from './stores/authStore';
+import { useAuthStore } from "./stores/authStore";
 
 const authStore = useAuthStore();
 </script>
@@ -29,6 +31,15 @@ $app-dark: #2c3e50;
 $app-light: #f4f4f4;
 $app-danger: #d9534f;
 
+.container-total {
+  position: relative;
+  min-height: 100vh;
+}
+
+main{
+  padding-bottom: 5rem;
+}
+
 .app-header {
   background: $app-dark;
   color: white;
@@ -37,7 +48,6 @@ $app-danger: #d9534f;
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin: -10px;
   margin-bottom: 10px;
 
   h1 {
@@ -67,9 +77,12 @@ $app-danger: #d9534f;
   background: $app-dark;
   color: white;
   text-align: center;
-  padding: 15px;
-  margin-top: 30px;
-  margin: -10px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 2.5rem;  
 }
 
 // Estilos adicionales

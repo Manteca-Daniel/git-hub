@@ -13,11 +13,13 @@
                 <h4>{{ repo.name }}</h4>
                 <p v-if="!repo.editing">{{ repo.description || 'Sin descripción' }}</p>
                 <input v-else v-model="repo.newDescription" placeholder="Nueva descripción" class="input" />
-                <a :href="repo.html_url" target="_blank">Ver en GitHub</a>
-                <button @click="deleteRepo(repo.name)" class="button delete">Eliminar</button>
-                <router-link :to="`/repo/${repo.name}`" class="button details" style="color: white;">Ver detalles</router-link>
-                <button v-if="!repo.editing" @click="editDescription(repo)" class="button edit">Editar Descripción</button>
-                <button v-else @click="saveDescription(repo)" class="button save">Guardar</button>
+                <div class="links">
+                  <a :href="repo.html_url" target="_blank">Ver en GitHub</a>
+                  <button @click="deleteRepo(repo.name)" class="button delete">Eliminar</button>
+                  <router-link :to="`/repo/${repo.name}`" class="button details" style="color: white;">Ver detalles</router-link>
+                  <button v-if="!repo.editing" @click="editDescription(repo)" class="button edit">Editar Descripción</button>
+                  <button v-else @click="saveDescription(repo)" class="button save">Guardar</button>
+                </div>
             </li>
         </ul>
     </div>
@@ -66,13 +68,22 @@ $light-color: #f4f4f4;
 $danger-color: #d9534f;
 $border-radius: 8px;
 
+.links {
+  display: flex;
+  gap: 10px;
+  justify-content: center; // Centra los elementos horizontalmente
+  align-items: center; // Asegura que estén a la misma altura
+  flex-wrap: wrap; // Permite que se ajusten en pantallas pequeñas
+}
+
+
 .profile-container {
   padding: 20px;
   text-align: center;
   background: white;
   border-radius: $border-radius;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
+  max-width: 600px;
   margin: auto;
 }
 
