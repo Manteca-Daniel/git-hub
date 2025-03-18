@@ -6,6 +6,7 @@ export const useAuthStore = defineStore("auth", {
     user: JSON.parse(localStorage.getItem("github_user")) || null,
     repos: JSON.parse(localStorage.getItem("github_repos")) || [],
     repoDetails: null,
+    userStats: null,
     issues: [],
     pullRequests: [],
     commits: [],
@@ -34,6 +35,20 @@ export const useAuthStore = defineStore("auth", {
       await this.fetchUser();
       await this.fetchRepos();
     },
+    async fetchUserStats() {
+      if (!this.token) return;
+      try {
+        const response = await fetch(`https://api.github.com/users/${this.user.login}`, {
+          headers: { Authorization: `token ${this.token}` },
+        });
+        if (!response.ok) {
+          throw new Error("Error al obtener estadísticas del usuario");
+        }
+        this.userStats = await response.json();
+      } catch (error) {
+        console.error("Error al obtener estadísticas del usuario:", error);
+      }
+    },    
     async fetchUser() {
       if (!this.token) return;
       try {
@@ -45,6 +60,7 @@ export const useAuthStore = defineStore("auth", {
         }
         this.user = await response.json();
         localStorage.setItem("github_user", JSON.stringify(this.user));
+        await this.fetchUserStats();
       } catch (error) {
         console.error("Error al obtener usuario:", error);
         this.logout();
@@ -96,23 +112,31 @@ export const useAuthStore = defineStore("auth", {
     async fetchRepoDetails(repoName) {
       if (!this.token) return;
       try {
-        const response = await fetch(
-          `https://api.github.com/repos/${this.user.login}/${repoName}`,
-          {
-            headers: { Authorization: `token ${this.token}` },
+          const response = await fetch(
+              `https://api.github.com/repos/${this.user.login}/${repoName}`,
+              {
+                  headers: { Authorization: `token ${this.token}` },
+              }
+          );
+          if (!response.ok) {
+              throw new Error("Error al obtener detalles del repositorio");
           }
-        );
-        if (!response.ok) {
-          throw new Error("Error al obtener detalles del repositorio");
-        }
-        this.repoDetails = await response.json();
-        await this.fetchIssues(repoName);
-        await this.fetchPullRequests(repoName);
-        await this.fetchCommits(repoName);
+          
+          const data = await response.json();
+          this.repoDetails = {
+              name: data.name,
+              description: data.description,
+              stargazers_count: data.stargazers_count, // ⭐ Estrellas
+              forks_count: data.forks_count, // 🍴 Forks
+          };
+  
+          await this.fetchIssues(repoName);
+          await this.fetchPullRequests(repoName);
+          await this.fetchCommits(repoName);
       } catch (error) {
-        console.error("Error al obtener detalles del repositorio:", error);
+          console.error("Error al obtener detalles del repositorio:", error);
       }
-    },
+  },
     async fetchIssues(repoName) {
       try {
         const response = await fetch(
@@ -247,7 +271,8 @@ export const useAuthStore = defineStore("auth", {
         );
     
         if (response.status === 204) {
-          console.log("Repositorio marcado como favorito con éxito.");
+          console.log("Repositorio marcado con una star con éxito.");
+          alert("¡Repositorio marcado con una star con éxito!");
         } else {
           throw new Error("No se pudo dar star al repositorio.");
         }

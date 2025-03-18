@@ -3,6 +3,13 @@
         <h2 class="repo-title">{{ repoDetails.name }}</h2>
         <p class="repo-description">{{ repoDetails.description || 'Sin descripción' }}</p>
 
+        <!-- Sección de Estadísticas -->
+        <section class="repo-section">
+            <h3>Estadísticas</h3>
+            <p>⭐ Stars: {{ repoDetails.stargazers_count }}</p>
+            <p>🍴 Forks: {{ repoDetails.forks_count }}</p>
+        </section>
+
         <!-- Sección de Gráfico -->
         <section class="repo-section">
             <h3>Resumen del Repositorio</h3>

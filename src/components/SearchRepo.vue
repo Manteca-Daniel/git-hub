@@ -17,7 +17,6 @@
           </a>
         </div>
         <div class="repo-actions">
-          <button @click="addToFavorites(repo)" class="fav-button">❤ Favorito</button>
           <button @click="starRepo(repo)" class="star-button">⭐ Star</button>
           <button @click="openIssueForm(repo)" class="issue-button">📝 Issue</button>
         </div>

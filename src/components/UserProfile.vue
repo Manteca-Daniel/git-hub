@@ -1,32 +1,40 @@
 <template>
-    <div v-if="user" class="profile-container">
-        <h2>Bienvenido, {{ user.login }}</h2>
-        <img :src="user.avatar_url" class="avatar" />
-        <p>{{ user.bio || 'Sin biografía' }}</p>
-        <button @click="logout" class="button logout">Logout</button>
+  <div v-if="user" class="profile-container">
+      <h2>Bienvenido, {{ user.login }}</h2>
+      <img :src="user.avatar_url" class="avatar" />
+      <p>{{ user.bio || 'Sin biografía' }}</p>
+      
+      <!-- Estadísticas del usuario -->
+      <div class="user-stats">
+          <p><strong>Repositorios públicos:</strong> {{ user.public_repos }}</p>
+          <p><strong>Seguidores:</strong> {{ user.followers }}</p>
+          <p><strong>Seguidos:</strong> {{ user.following }}</p>
+      </div>
+      
+      <button @click="logout" class="button logout">Logout</button>
 
-        <h3>Repositorios</h3>
-        <input v-model="newRepoName" placeholder="Nombre del nuevo repo" class="input" />
-        <button @click="createRepo" class="button">Crear Repositorio</button>
-        <ul class="repo-list">
-            <li v-for="repo in repos" :key="repo.id" class="repo-item">
-                <h4>{{ repo.name }}</h4>
-                <p v-if="!repo.editing">{{ repo.description || 'Sin descripción' }}</p>
-                <input v-else v-model="repo.newDescription" placeholder="Nueva descripción" class="input" />
-                <div class="links">
-                  <a :href="repo.html_url" target="_blank">Ver en GitHub</a>
-                  <button @click="deleteRepo(repo.name)" class="button delete">Eliminar</button>
-                  <router-link :to="`/repo/${repo.name}`" class="button details" style="color: white;">Ver detalles</router-link>
-                  <button v-if="!repo.editing" @click="editDescription(repo)" class="button edit">Editar Descripción</button>
-                  <button v-else @click="saveDescription(repo)" class="button save">Guardar</button>
-                </div>
-            </li>
-        </ul>
-    </div>
+      <h3>Repositorios</h3>
+      <input v-model="newRepoName" placeholder="Nombre del nuevo repo" class="input" />
+      <button @click="createRepo" class="button">Crear Repositorio</button>
+      <ul class="repo-list">
+          <li v-for="repo in repos" :key="repo.id" class="repo-item">
+              <h4>{{ repo.name }}</h4>
+              <p v-if="!repo.editing">{{ repo.description || 'Sin descripción' }}</p>
+              <input v-else v-model="repo.newDescription" placeholder="Nueva descripción" class="input" />
+              <div class="links">
+                <a :href="repo.html_url" target="_blank">Ver en GitHub</a>
+                <button @click="deleteRepo(repo.name)" class="button delete">Eliminar</button>
+                <router-link :to="`/repo/${repo.name}`" class="button details" style="color: white;">Ver detalles</router-link>
+                <button v-if="!repo.editing" @click="editDescription(repo)" class="button edit">Editar Descripción</button>
+                <button v-else @click="saveDescription(repo)" class="button save">Guardar</button>
+              </div>
+          </li>
+      </ul>
+  </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useAuthStore } from '../stores/authStore';
 
 const authStore = useAuthStore();
@@ -59,6 +67,10 @@ const saveDescription = async (repo) => {
         console.error("Error actualizando la descripción:", error);
     }
 };
+
+onMounted(async () => {
+    await authStore.fetchUser();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -76,6 +88,13 @@ $border-radius: 8px;
   flex-wrap: wrap; // Permite que se ajusten en pantallas pequeñas
 }
 
+.user-stats {
+  margin: 15px 0;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  text-align: left;
+}
 
 .profile-container {
   padding: 20px;
