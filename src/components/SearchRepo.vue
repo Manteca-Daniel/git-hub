@@ -2,19 +2,17 @@
   <div class="search-container">
     <h2>Buscar Repositorio</h2>
     <div class="search-box">
-      <input
-        v-model="searchQuery"
-        placeholder="Nombre del repositorio"
-        class="search-input"
-      />
-      <button @click="search" class="search-button">Buscar</button>
+      <input v-model="searchQuery" placeholder="Nombre del repositorio" class="search-input" />
+      <button @click="search" class="search-button" :disabled="loading">Buscar</button>
     </div>
-    <ul class="repo-list">
+    
+    <p v-if="loading" class="loading">Buscando repositorios...</p>
+    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+    
+    <ul v-if="searchResults.length > 0" class="repo-list">
       <li v-for="repo in searchResults" :key="repo.id" class="repo-item">
         <div class="repo-info">
-          <a :href="repo.html_url" target="_blank" class="repo-link">
-            {{ repo.full_name }}
-          </a>
+          <a :href="repo.html_url" target="_blank" class="repo-link">{{ repo.full_name }}</a>
         </div>
         <div class="repo-actions">
           <button @click="starRepo(repo)" class="star-button">⭐ Star</button>
@@ -22,6 +20,12 @@
         </div>
       </li>
     </ul>
+    
+    <div class="pagination" v-if="searchResults.length > 0">
+      <button @click="prevPage" :disabled="page <= 1">Anterior</button>
+      <span>Página {{ page }}</span>
+      <button @click="nextPage">Siguiente</button>
+    </div>
 
     <div v-if="selectedRepo" class="issue-form">
       <h3>Crear un Issue en {{ selectedRepo.full_name }}</h3>
@@ -46,13 +50,44 @@ const searchResults = ref([]);
 const selectedRepo = ref(null);
 const issueTitle = ref("");
 const issueBody = ref("");
+const loading = ref(false);
+const errorMessage = ref("");
+const page = ref(1);
+const perPage = 10;
 
 const search = async () => {
-  searchResults.value = await authStore.searchRepo(searchQuery.value);
+  if (!searchQuery.value.trim()) {
+    errorMessage.value = "El campo de búsqueda no puede estar vacío.";
+    return;
+  }
+
+  loading.value = true;
+  errorMessage.value = "";
+  searchResults.value = [];
+
+  try {
+    const results = await authStore.searchRepo(searchQuery.value, page.value, perPage);
+    if (results.length === 0) {
+      errorMessage.value = "No se encontraron repositorios.";
+    }
+    searchResults.value = results;
+  } catch (error) {
+    errorMessage.value = "Hubo un error en la búsqueda. Inténtalo de nuevo.";
+  }
+
+  loading.value = false;
 };
 
-const addToFavorites = (repo) => {
-  authStore.addToFavorites(repo);
+const nextPage = () => {
+  page.value++;
+  search();
+};
+
+const prevPage = () => {
+  if (page.value > 1) {
+    page.value--;
+    search();
+  }
 };
 
 const starRepo = async (repo) => {
@@ -192,5 +227,29 @@ const submitIssue = async () => {
 .button-group {
   display: flex;
   justify-content: space-between;
+}
+
+.loading {
+  color: #3498db;
+  font-weight: bold;
+}
+.error {
+  color: #e74c3c;
+  font-weight: bold;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+.search-container {
+  max-width: 600px;
+  margin: 30px auto;
+  text-align: center;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 </style>
