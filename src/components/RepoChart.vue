@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="chart-container">
         <Bar :data="chartData" :options="chartOptions" />
     </div>
 </template>
@@ -52,8 +52,14 @@ export default defineComponent({
 </script>
 
 <style scoped>
-div {
+.chart-container {
     max-width: 600px;
     margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+    .chart-container {
+        height: 300px;
+    }
 }
 </style>

@@ -195,4 +195,23 @@ const createBranch = () => {
         transform: scale(1.05);
     }
 }
+
+@media (max-width: 768px) {
+    .repo-details {
+        padding: 15px;
+    }
+    .stats-grid {
+        flex-direction: column;
+        text-align: center;
+    }
+    .repo-section {
+        padding: 10px;
+    }
+    .branch-creator {
+        flex-direction: column;
+    }
+    .input {
+        width: 100%;
+    }
+}
 </style>

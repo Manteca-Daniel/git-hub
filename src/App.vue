@@ -47,7 +47,8 @@ $app-danger: #d9534f;
 }
 
 main {
-  padding-bottom: 5rem;
+  padding-bottom: 10rem;
+  padding-top: 2rem;
 }
 
 .app-header {
@@ -58,6 +59,7 @@ main {
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: height 0.3s ease-in-out;
 }
 
 .logo-container {
@@ -123,4 +125,31 @@ nav {
     color: $app-primary;
   }
 }
+
+@media (max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    padding: 20px 0;
+  }
+
+  nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+    position: static;
+    transform: none;
+  }
+
+  nav a {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+  }
+}
+
 </style>

@@ -252,4 +252,17 @@ const submitIssue = async () => {
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
+
+@media (max-width: 600px) {
+  .repo-item {
+    flex-direction: column;
+    text-align: center;
+  }
+  .repo-actions {
+    flex-direction: column;
+  }
+  .button-group {
+    flex-direction: column;
+  }
+}
 </style>

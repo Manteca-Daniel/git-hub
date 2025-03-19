@@ -60,6 +60,10 @@
     background: #ffffff;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+    @media (max-width: 768px) {
+        padding: 15px;
+    }
 }
 
 .token-header {
@@ -72,6 +76,10 @@
 
 .token-section {
     margin-top: 30px;
+
+    @media (max-width: 768px) {
+        margin-top: 20px;
+    }
 }
 
 .token-section h2 {
@@ -84,6 +92,18 @@
     display: block;
     width: 150px;
     margin: 20px auto;
+
+    @media (max-width: 480px) {
+        width: 100px;
+    }
+}
+
+ul, ol {
+    padding-left: 20px;
+
+    @media (max-width: 480px) {
+        padding-left: 15px;
+    }
 }
 
 .important {
@@ -92,6 +112,10 @@
     border-left: 5px solid #ffa502;
     border-radius: 5px;
     margin-top: 15px;
+
+    @media (max-width: 768px) {
+        font-size: 0.8em;
+    }
 }
 
 a {

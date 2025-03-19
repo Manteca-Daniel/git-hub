@@ -224,4 +224,14 @@ $border-radius: 8px;
   }
 }
 
+@media (max-width: 768px) {
+  .profile-container {
+    max-width: 100%;
+    padding: 15px;
+  }
+  .links {
+    flex-direction: column;
+    align-items: center;
+  }
+}
 </style>
