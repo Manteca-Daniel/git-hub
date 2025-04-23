@@ -1,35 +1,50 @@
 <template>
   <div v-if="user" class="profile-container">
-      <h2>Bienvenido, {{ user.login }}</h2>
-      <img :src="user.avatar_url" class="avatar" />
-      <p>{{ user.bio || 'Sin biografía' }}</p>
-      
-      <!-- Estadísticas del usuario -->
-      <div class="user-stats">
-          <p><strong>Repositorios públicos:</strong> {{ user.public_repos }}</p>
-          <p><strong>Seguidores:</strong> {{ user.followers }}</p>
-          <p><strong>Seguidos:</strong> {{ user.following }}</p>
-      </div>
-      
-      <button @click="logout" class="button logout">Logout</button>
+    <h2>Bienvenido, {{ user.login }}</h2>
+    <img :src="user.avatar_url" class="avatar" />
+    <p>{{ user.bio || 'Sin biografía' }}</p>
 
-      <h3>Repositorios</h3>
-      <input v-model="newRepoName" placeholder="Nombre del nuevo repo" class="input" />
-      <button @click="createRepo" class="button">Crear Repositorio</button>
-      <ul class="repo-list">
-          <li v-for="repo in repos" :key="repo.id" class="repo-item">
-              <h4>{{ repo.name }}</h4>
-              <p v-if="!repo.editing">{{ repo.description || 'Sin descripción' }}</p>
-              <input v-else v-model="repo.newDescription" placeholder="Nueva descripción" class="input" />
-              <div class="links">
-                <a :href="repo.html_url" target="_blank">Ver en GitHub</a>
-                <button @click="deleteRepo(repo.name)" class="button delete">Eliminar</button>
-                <router-link :to="`/repo/${repo.name}`" class="button details" style="color: white;">Ver detalles</router-link>
-                <button v-if="!repo.editing" @click="editDescription(repo)" class="button edit">Editar Descripción</button>
-                <button v-else @click="saveDescription(repo)" class="button save">Guardar</button>
-              </div>
-          </li>
-      </ul>
+    <div class="user-stats">
+      <p><strong>Repositorios públicos:</strong> {{ user.public_repos }}</p>
+      <p><strong>Seguidores:</strong> {{ user.followers }}</p>
+      <p><strong>Seguidos:</strong> {{ user.following }}</p>
+    </div>
+
+    <button @click="logout" class="button logout">Logout</button>
+
+    <h3>Repositorios</h3>
+    <input v-model="newRepoName" placeholder="Nombre del nuevo repo" class="input" />
+    <button @click="createRepo" class="button">Crear Repositorio</button>
+
+    <ul class="repo-list">
+      <li v-for="repo in repos" :key="repo.id" class="repo-item">
+        <h4>{{ repo.name }}</h4>
+        <p v-if="!repo.editing">{{ repo.description || 'Sin descripción' }}</p>
+        <input v-else v-model="repo.newDescription" placeholder="Nueva descripción" class="input"
+          :disabled="repo.owner.login !== user.login" />
+
+        <div class="links">
+          <a :href="repo.html_url" target="_blank">Ver en GitHub</a>
+          <router-link :to="`/repo/${repo.owner.login}/${repo.name}`" class="button details" style="color: white;">
+            Ver detalles
+          </router-link>
+
+
+          <button @click="deleteRepo(repo.name)" class="button delete" :disabled="repo.owner.login !== user.login">
+            Eliminar
+          </button>
+
+          <button v-if="!repo.editing" @click="editDescription(repo)" class="button edit"
+            :disabled="repo.owner.login !== user.login">
+            Editar Descripción
+          </button>
+
+          <button v-else @click="saveDescription(repo)" class="button save" :disabled="repo.owner.login !== user.login">
+            Guardar
+          </button>
+        </div>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -44,32 +59,33 @@ const logout = () => authStore.logout();
 
 const newRepoName = ref('');
 const createRepo = async () => {
-    if (newRepoName.value.trim()) {
-        await authStore.createRepo(newRepoName.value.trim());
-        newRepoName.value = '';
-    }
+  if (newRepoName.value.trim()) {
+    await authStore.createRepo(newRepoName.value.trim());
+    newRepoName.value = '';
+  }
 };
+
 const deleteRepo = async (repoName) => {
-    await authStore.deleteRepo(repoName);
+  await authStore.deleteRepo(repoName);
 };
 
 const editDescription = (repo) => {
-    repo.editing = true;
-    repo.newDescription = repo.description;
+  repo.editing = true;
+  repo.newDescription = repo.description;
 };
 
 const saveDescription = async (repo) => {
-    try {
-        await authStore.updateRepoDescription(repo.name, repo.newDescription);
-        repo.description = repo.newDescription;
-        repo.editing = false;
-    } catch (error) {
-        console.error("Error actualizando la descripción:", error);
-    }
+  try {
+    await authStore.updateRepoDescription(repo.name, repo.newDescription);
+    repo.description = repo.newDescription;
+    repo.editing = false;
+  } catch (error) {
+    console.error("Error actualizando la descripción:", error);
+  }
 };
 
 onMounted(async () => {
-    await authStore.fetchUser();
+  await authStore.fetchUser();
 });
 </script>
 
@@ -83,9 +99,9 @@ $border-radius: 8px;
 .links {
   display: flex;
   gap: 10px;
-  justify-content: center; // Centra los elementos horizontalmente
-  align-items: center; // Asegura que estén a la misma altura
-  flex-wrap: wrap; // Permite que se ajusten en pantallas pequeñas
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .user-stats {
@@ -104,18 +120,6 @@ $border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-width: 600px;
   margin: auto;
-}
-
-.profile-title {
-  font-size: 1.8rem;
-  color: $dark-color;
-  margin-bottom: 10px;
-}
-
-.profile-bio {
-  font-size: 1rem;
-  color: #666;
-  margin-bottom: 15px;
 }
 
 .avatar {
@@ -167,17 +171,9 @@ $border-radius: 8px;
   }
 }
 
-.repo-title {
-  font-size: 1.5rem;
-  color: $dark-color;
-  margin-top: 20px;
-}
-
-.repo-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-bottom: 20px;
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .input {
@@ -229,6 +225,7 @@ $border-radius: 8px;
     max-width: 100%;
     padding: 15px;
   }
+
   .links {
     flex-direction: column;
     align-items: center;

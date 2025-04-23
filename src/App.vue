@@ -7,6 +7,7 @@
       </div>
       <nav>
         <router-link to="/">Inicio</router-link>
+        <router-link to="/tickets">Tickets</router-link>
         <router-link v-if="authStore.user" to="/search">Buscar Repositorios</router-link>
         <router-link v-else to="/token">Obtener Token</router-link>
       </nav>

@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import RepoDetails from '../views/RepoView.vue';
 import SearchRepo from '../views/SearchView.vue';
 import Token from '../views/TokenView.vue';
+import Tickets from '../views/TicketsView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,6 +18,12 @@ const router = createRouter({
       path: '/token',
       name: 'token',
       component: Token,
+      props: true
+    },
+    {
+      path: '/tickets',
+      name: 'tickets',
+      component: Tickets,
       props: true
     }, 
     {
@@ -35,11 +42,11 @@ const router = createRouter({
       props: true
     },
     {
-      path: '/repo/:repoName',
+      path: '/repo/:owner/:repoName',
       name: 'repo',
       component: RepoDetails,
       props: true
-    },
+    },    
   ],
 })
 

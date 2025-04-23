@@ -48,7 +48,7 @@ export const useAuthStore = defineStore("auth", {
       } catch (error) {
         console.error("Error al obtener estadísticas del usuario:", error);
       }
-    },    
+    },
     async fetchUser() {
       if (!this.token) return;
       try {
@@ -109,38 +109,40 @@ export const useAuthStore = defineStore("auth", {
         console.error("Error en la actualización:", error);
       }
     },
-    async fetchRepoDetails(repoName) {
+    async fetchRepoDetails(owner, repoName) {
       if (!this.token) return;
-      try {
-          const response = await fetch(
-              `https://api.github.com/repos/${this.user.login}/${repoName}`,
-              {
-                  headers: { Authorization: `token ${this.token}` },
-              }
-          );
-          if (!response.ok) {
-              throw new Error("Error al obtener detalles del repositorio");
-          }
-          
-          const data = await response.json();
-          this.repoDetails = {
-              name: data.name,
-              description: data.description,
-              stargazers_count: data.stargazers_count, // ⭐ Estrellas
-              forks_count: data.forks_count, // 🍴 Forks
-          };
-  
-          await this.fetchIssues(repoName);
-          await this.fetchPullRequests(repoName);
-          await this.fetchCommits(repoName);
-      } catch (error) {
-          console.error("Error al obtener detalles del repositorio:", error);
-      }
-  },
-    async fetchIssues(repoName) {
+
       try {
         const response = await fetch(
-          `https://api.github.com/repos/${this.user.login}/${repoName}/issues`,
+          `https://api.github.com/repos/${owner}/${repoName}`,
+          {
+            headers: { Authorization: `token ${this.token}` },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Error al obtener detalles del repositorio");
+        }
+
+        const data = await response.json();
+        this.repoDetails = {
+          name: data.name,
+          description: data.description,
+          stargazers_count: data.stargazers_count,
+          forks_count: data.forks_count,
+        };
+
+        await this.fetchIssues(owner, repoName);
+        await this.fetchPullRequests(owner, repoName);
+        await this.fetchCommits(owner, repoName);
+      } catch (error) {
+        console.error("Error al obtener detalles del repositorio:", error);
+      }
+    },
+    async fetchIssues(owner, repoName) {
+      try {
+        const response = await fetch(
+          `https://api.github.com/repos/${owner}/${repoName}/issues`,
           {
             headers: { Authorization: `token ${this.token}` },
           }
@@ -150,10 +152,11 @@ export const useAuthStore = defineStore("auth", {
         console.error("Error al obtener issues:", error);
       }
     },
-    async fetchPullRequests(repoName) {
+
+    async fetchPullRequests(owner, repoName) {
       try {
         const response = await fetch(
-          `https://api.github.com/repos/${this.user.login}/${repoName}/pulls`,
+          `https://api.github.com/repos/${owner}/${repoName}/pulls`,
           {
             headers: { Authorization: `token ${this.token}` },
           }
@@ -163,10 +166,11 @@ export const useAuthStore = defineStore("auth", {
         console.error("Error al obtener pull requests:", error);
       }
     },
-    async fetchCommits(repoName) {
+
+    async fetchCommits(owner, repoName) {
       try {
         const response = await fetch(
-          `https://api.github.com/repos/${this.user.login}/${repoName}/commits`,
+          `https://api.github.com/repos/${owner}/${repoName}/commits`,
           {
             headers: { Authorization: `token ${this.token}` },
           }
@@ -269,7 +273,7 @@ export const useAuthStore = defineStore("auth", {
             },
           }
         );
-    
+
         if (response.status === 204) {
           console.log("Repositorio marcado con una star con éxito.");
           alert("¡Repositorio marcado con una star con éxito!");
@@ -298,19 +302,19 @@ export const useAuthStore = defineStore("auth", {
             }),
           }
         );
-    
+
         if (!response.ok) {
           throw new Error(`Error al crear el issue: ${response.statusText}`);
         }
-    
+
         console.log(`Issue creado en ${repoName}: ${issueTitle}`);
         alert("¡Issue creado con éxito!");
       } catch (error) {
         console.error("Error al crear el issue:", error);
         alert("Hubo un error al crear el issue.");
       }
-    },    
-    
+    },
+
 
     logout() {
       this.token = "";

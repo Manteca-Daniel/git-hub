@@ -69,7 +69,12 @@ const newBranch = ref('');
 
 onMounted(async () => {
     try {
-        await authStore.fetchRepoDetails(route.params.repoName);
+        const owner = route.params.owner;
+        const repoName = route.params.repoName;
+
+        // await authStore.fetchRepoDetails(owner, repoName); // 👈 asegúrate de usar ambos parámetros
+        await authStore.fetchRepoDetails(route.params.owner, route.params.repoName);
+
         toast.success("📦 Repositorio cargado correctamente!");
     } catch (error) {
         toast.error("❌ Error al cargar el repositorio.");
@@ -77,8 +82,11 @@ onMounted(async () => {
 });
 
 const createBranch = () => {
+    const owner = route.params.owner;
+    const repoName = route.params.repoName;
+
     if (newBranch.value.trim()) {
-        authStore.createBranch(route.params.repoName, newBranch.value.trim());
+        authStore.createBranch(owner, repoName, newBranch.value.trim());
         toast.success(`✅ Rama "${newBranch.value}" creada con éxito!`);
         newBranch.value = '';
     } else {
