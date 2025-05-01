@@ -58,12 +58,52 @@ const repos = computed(() => authStore.repos);
 const logout = () => authStore.logout();
 
 const newRepoName = ref('');
+
 const createRepo = async () => {
-  if (newRepoName.value.trim()) {
-    await authStore.createRepo(newRepoName.value.trim());
-    newRepoName.value = '';
+  if (!newRepoName.value.trim()) return;
+
+  const repoName = newRepoName.value.trim();
+  await authStore.createRepo(repoName);
+
+  const confirmed = confirm("¿Quieres subir un proyecto existente desde tu ordenador a este repositorio?");
+  if (confirmed) {
+    const repoUrl = `https://github.com/${user.login}/${repoName}.git`;
+    const scriptContent = generateGitScript(repoUrl, repoName);
+    downloadScript(scriptContent, 'subir-proyecto.sh');
   }
+
+  newRepoName.value = '';
 };
+
+function generateGitScript(repoUrl, repoName) {
+  return `#!/bin/bash
+
+# Cambia esto por la ruta de tu carpeta local
+cd /ruta/a/tu/proyecto
+
+echo "# ${repoName}" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin ${repoUrl}
+git push -u origin main
+
+git add .
+git commit -m "first commit"
+git push origin main
+`;
+}
+
+function downloadScript(content, filename) {
+  const blob = new Blob([content], { type: 'text/x-sh' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
 
 const deleteRepo = async (repoName) => {
   await authStore.deleteRepo(repoName);
