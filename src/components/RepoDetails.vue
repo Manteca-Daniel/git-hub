@@ -1,23 +1,21 @@
 <template>
     <div class="repo-details" v-if="repoDetails">
         <h2 class="repo-title">{{ repoDetails.name }}</h2>
-        <p class="repo-description">{{ repoDetails.description || 'Sin descripción' }}</p>
+        <p class="repo-description">{{ repoDetails.description || $t('sin_descripcion') }}</p>
 
-        <!-- Sección de Estadísticas -->
         <section class="repo-section">
-            <h3>Estadísticas</h3>
-            <p>⭐ Stars: {{ repoDetails.stargazers_count }}</p>
-            <p>🍴 Forks: {{ repoDetails.forks_count }}</p>
+            <h3>{{ $t('estadisticas') }}</h3>
+            <p>⭐ {{ $t('stars') }}: {{ repoDetails.stargazers_count }}</p>
+            <p>🍴 {{ $t('forks') }}: {{ repoDetails.forks_count }}</p>
         </section>
 
-        <!-- Sección de Gráfico -->
         <section class="repo-section">
-            <h3>Resumen del Repositorio</h3>
+            <h3>{{ $t('resumen_repositorio') }}</h3>
             <RepoChart :issues="issues" :pullRequests="pullRequests" :commits="commits" />
         </section>
 
         <section class="repo-section">
-            <h3>Issues</h3>
+            <h3>{{ $t('issues') }}</h3>
             <ul class="repo-list">
                 <li v-for="issue in issues" :key="issue.id" class="repo-item">
                     <span>{{ issue.title }}</span>
@@ -26,7 +24,7 @@
         </section>
 
         <section class="repo-section">
-            <h3>Pull Requests</h3>
+            <h3>{{ $t('pull_requests') }}</h3>
             <ul class="repo-list">
                 <li v-for="pr in pullRequests" :key="pr.id" class="repo-item">
                     <span>{{ pr.title }}</span>
@@ -35,17 +33,17 @@
         </section>
 
         <section class="repo-section">
-            <h3>Commits</h3>
+            <h3>{{ $t('commits') }}</h3>
             <ul class="repo-list">
                 <li v-for="commit in commits" :key="commit.sha" class="repo-item">
-                    <span>Commit: {{ commit.commit.message }}</span>
+                    <span>{{ $t('commit') }}: {{ commit.commit.message }}</span>
                 </li>
             </ul>
         </section>
 
         <div class="branch-creator">
-            <input v-model="newBranch" placeholder="Nombre de la nueva rama" class="input" />
-            <button @click="createBranch" class="button">Crear Rama</button>
+            <input v-model="newBranch" :placeholder="$t('nombre_nueva_rama')" class="input" />
+            <button @click="createBranch" class="button">{{ $t('crear_rama') }}</button>
         </div>
     </div>
 </template>
@@ -55,11 +53,13 @@ import { ref, computed, onMounted } from 'vue';
 import { useAuthStore } from '../stores/authStore';
 import { useRoute } from 'vue-router';
 import { useToast } from 'vue-toastification';
+import { useI18n } from 'vue-i18n';
 import RepoChart from './RepoChart.vue';
 
 const authStore = useAuthStore();
 const route = useRoute();
 const toast = useToast();
+const { t } = useI18n();
 
 const repoDetails = computed(() => authStore.repoDetails);
 const issues = computed(() => authStore.issues);
@@ -69,15 +69,10 @@ const newBranch = ref('');
 
 onMounted(async () => {
     try {
-        const owner = route.params.owner;
-        const repoName = route.params.repoName;
-
-        // await authStore.fetchRepoDetails(owner, repoName); // 👈 asegúrate de usar ambos parámetros
         await authStore.fetchRepoDetails(route.params.owner, route.params.repoName);
-
-        toast.success("📦 Repositorio cargado correctamente!");
+        toast.success(`📦 ${t('repositorio_cargado')}`);
     } catch (error) {
-        toast.error("❌ Error al cargar el repositorio.");
+        toast.error(`❌ ${t('error_cargar_repositorio')}`);
     }
 });
 
@@ -87,10 +82,10 @@ const createBranch = () => {
 
     if (newBranch.value.trim()) {
         authStore.createBranch(owner, repoName, newBranch.value.trim());
-        toast.success(`✅ Rama "${newBranch.value}" creada con éxito!`);
+        toast.success(`✅ ${t('rama_creada_exito', { nombre: newBranch.value })}`);
         newBranch.value = '';
     } else {
-        toast.error('⚠️ El nombre de la rama no puede estar vacío');
+        toast.error(`⚠️ ${t('nombre_rama_vacio')}`);
     }
 };
 </script>
@@ -208,16 +203,20 @@ const createBranch = () => {
     .repo-details {
         padding: 15px;
     }
+
     .stats-grid {
         flex-direction: column;
         text-align: center;
     }
+
     .repo-section {
         padding: 10px;
     }
+
     .branch-creator {
         flex-direction: column;
     }
+
     .input {
         width: 100%;
     }

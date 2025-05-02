@@ -1,6 +1,6 @@
 <template>
     <div class="login-container">
-        <h2>Login con Token de GitHub</h2>
+        <h2>{{ $t('login_git') }}</h2>
         <input v-model="token" placeholder="Introduce tu token" class="input" />
         <button @click="login" class="button">Login</button>
     </div>

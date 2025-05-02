@@ -1,46 +1,67 @@
 <template>
   <div v-if="user" class="profile-container">
-    <h2>Bienvenido, {{ user.login }}</h2>
+    <h2>{{ $t('bienvenido') }}, {{ user.login }}</h2>
     <img :src="user.avatar_url" class="avatar" />
-    <p>{{ user.bio || 'Sin biografía' }}</p>
+    <p>{{ user.bio || $t('sin_biografia') }}</p>
 
     <div class="user-stats">
-      <p><strong>Repositorios públicos:</strong> {{ user.public_repos }}</p>
-      <p><strong>Seguidores:</strong> {{ user.followers }}</p>
-      <p><strong>Seguidos:</strong> {{ user.following }}</p>
+      <p><strong>{{ $t('repos_publicos') }}:</strong> {{ user.public_repos }}</p>
+      <p><strong>{{ $t('seguidores') }}:</strong> {{ user.followers }}</p>
+      <p><strong>{{ $t('seguidos') }}:</strong> {{ user.following }}</p>
     </div>
 
-    <button @click="logout" class="button logout">Logout</button>
+    <button @click="logout" class="button logout">{{ $t('logout') }}</button>
 
-    <h3>Repositorios</h3>
-    <input v-model="newRepoName" placeholder="Nombre del nuevo repo" class="input" />
-    <button @click="createRepo" class="button">Crear Repositorio</button>
+    <h3>{{ $t('repositorios') }}</h3>
+    <input v-model="newRepoName" :placeholder="$t('nombre_nuevo_repo')" class="input" />
+    <button @click="createRepo" class="button">{{ $t('crear_repositorio') }}</button>
 
     <ul class="repo-list">
       <li v-for="repo in repos" :key="repo.id" class="repo-item">
         <h4>{{ repo.name }}</h4>
-        <p v-if="!repo.editing">{{ repo.description || 'Sin descripción' }}</p>
-        <input v-else v-model="repo.newDescription" placeholder="Nueva descripción" class="input"
-          :disabled="repo.owner.login !== user.login" />
+        <p v-if="!repo.editing">{{ repo.description || $t('sin_descripcion') }}</p>
+        <input
+          v-else
+          v-model="repo.newDescription"
+          :placeholder="$t('nueva_descripcion')"
+          class="input"
+          :disabled="repo.owner.login !== user.login"
+        />
 
         <div class="links">
-          <a :href="repo.html_url" target="_blank">Ver en GitHub</a>
-          <router-link :to="`/repo/${repo.owner.login}/${repo.name}`" class="button details" style="color: white;">
-            Ver detalles
+          <a :href="repo.html_url" target="_blank">{{ $t('ver_en_github') }}</a>
+          <router-link
+            :to="`/repo/${repo.owner.login}/${repo.name}`"
+            class="button details"
+            style="color: white;"
+          >
+            {{ $t('ver_detalles') }}
           </router-link>
 
-
-          <button @click="deleteRepo(repo.name)" class="button delete" :disabled="repo.owner.login !== user.login">
-            Eliminar
+          <button
+            @click="deleteRepo(repo.name)"
+            class="button delete"
+            :disabled="repo.owner.login !== user.login"
+          >
+            {{ $t('eliminar') }}
           </button>
 
-          <button v-if="!repo.editing" @click="editDescription(repo)" class="button edit"
-            :disabled="repo.owner.login !== user.login">
-            Editar Descripción
+          <button
+            v-if="!repo.editing"
+            @click="editDescription(repo)"
+            class="button edit"
+            :disabled="repo.owner.login !== user.login"
+          >
+            {{ $t('editar_descripcion') }}
           </button>
 
-          <button v-else @click="saveDescription(repo)" class="button save" :disabled="repo.owner.login !== user.login">
-            Guardar
+          <button
+            v-else
+            @click="saveDescription(repo)"
+            class="button save"
+            :disabled="repo.owner.login !== user.login"
+          >
+            {{ $t('guardar') }}
           </button>
         </div>
       </li>
