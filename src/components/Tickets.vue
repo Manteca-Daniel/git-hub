@@ -10,13 +10,13 @@
             <label class="label">Selecciona un repositorio:</label>
             <select v-model="selectedRepo" class="select">
                 <option disabled value="">-- Selecciona un repositorio --</option>
-                <option v-for="repo in authStore.repos" :key="repo.id" :value="repo.url">
+                <option v-for="repo in authStore.repos" :key="repo.id" :value="repo">
                     {{ repo.name }}
                 </option>
             </select>
 
             <div v-if="selectedRepo">
-                <h3 class="subtitle">Tickets para <span>{{ selectedRepo }}</span></h3>
+                <h3 class="subtitle">Tickets para <span>{{ selectedRepo.name }}</span></h3>
 
                 <ul class="ticket-list">
                     <li v-for="(ticket, index) in ticketsStore.tickets || []" :key="index" :class="['ticket-card', estadoColorClase(ticket.idf_tipo_estado)]">
@@ -25,8 +25,12 @@
                                 <template v-if="editIndex === index">
                                 <input v-model="editTicket.encabezado" class="edit-input" placeholder="Encabezado" />
                                 <input v-model="editTicket.descripcion" class="edit-input" placeholder="Descripción" />
-                                <input v-model="editTicket.owner" class="edit-input" placeholder="Creador" />
-                                </template>
+                                <select v-model="editTicket.owner" class="edit-input" placeholder="Propietario">
+                                    <option v-for="colaborador in authStore.collaborators.value" :key="colaborador.login" :value="colaborador.login">
+                                        {{ colaborador.login }}
+                                    </option>
+                                </select>
+                            </template>
     
                             </template>
                             <template v-else>
@@ -50,13 +54,13 @@
                             </template>
                             <template v-else>
                                 <div class="ticket-details">
-                                    <select v-model="ticket.idf_tipo_estado" :class="['select-estado', estadoColorClase(ticket.idf_tipo_estado)]" @change="$event.target.blur()">
+                                    <select v-model="ticket.idf_tipo_estado" :class="['select-estado', estadoColorClase(ticket.idf_tipo_estado)]" @change="$event.target.blur(), startEdit(index, ticket), saveEdit(index)">
                                         <option value="" disabled>Selecciona un estado</option>
                                         <option v-for="estado in estadosStore.estados" :key="estado.id_estado" :value="estado.id_estado">
                                             {{ estado.descripcion }}
                                         </option>
                                     </select>
-                                    <select v-model="ticket.idf_tipo_ticket" class="select-tipo-ticket">
+                                    <select v-model="ticket.idf_tipo_ticket" class="select-tipo-ticket" @change="$event.target.blur(), startEdit(index, ticket), saveEdit(index)">
                                         <option value="" disabled>Selecciona tipo tickets</option>
                                         <option v-for="tipoTicket in tiposTicketsStore.tiposTickets" :key="tipoTicket.id_tipo_ticket" :value="tipoTicket.id_tipo_ticket">
                                             {{ tipoTicket.descripcion }}
@@ -109,17 +113,16 @@ const editTicket = ref({
 
 async function loadTickets(urlRepo) {
     try {
-        console.log("Cargando tickets para el repositorio:", urlRepo);
         await ticketsStore.getTickets(urlRepo);
         tickets[urlRepo] = [...ticketsStore.tickets]; 
-        console.log("Tickets cargados:", tickets[urlRepo]);
     } catch (error) {
         console.error("Error al cargar los tickets:", error);
     }
 }
 
 watch(selectedRepo, async (newRepo) => {
-    loadTickets(newRepo); 
+    loadTickets(newRepo.url);
+    await loadCollaborators(); 
 });
 
 function addTicket() {
@@ -136,7 +139,6 @@ function addTicket() {
 function startEdit(index, ticket) {
     editIndex.value = index;
     editTicket.value = { ...ticket }; 
-    console.log("Editando ticket:", editTicket.value);
 }
 
 async function saveEdit(index) {
@@ -147,17 +149,25 @@ async function saveEdit(index) {
         idf_tipo_ticket: originalTicket.idf_tipo_ticket,
         idf_tipo_estado: originalTicket.idf_tipo_estado,
         repositorio: originalTicket.repositorio,
-        repo: originalTicket.repositorio // requerido por la query param del backend
+        repo: originalTicket.repositorio 
     };
 
     try {
         await ticketsStore.modificarTicket(updatedTicket);
-        await ticketsStore.getTickets(selectedRepo.value); // Recarga lista
+        await ticketsStore.getTickets(selectedRepo.value.url); // Recarga lista
     } catch (err) {
         console.error("Error al guardar el ticket:", err);
     }
 
     cancelEdit();
+}
+
+async function loadCollaborators() {
+    try {
+        await authStore.fetchCollaboratorsRepo(selectedRepo.value.name);
+    } catch (error) {
+        console.error("Error al cargar los colaboradores:", error);
+    }
 }
 
 

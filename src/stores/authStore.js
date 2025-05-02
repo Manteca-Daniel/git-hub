@@ -10,6 +10,7 @@ export const useAuthStore = defineStore("auth", {
     issues: [],
     pullRequests: [],
     commits: [],
+    collaborators: [],
     favoriteRepos: JSON.parse(localStorage.getItem('favorite_repos')) || [],
   }),
   actions: {
@@ -315,6 +316,21 @@ export const useAuthStore = defineStore("auth", {
       }
     },
 
+    async fetchCollaboratorsRepo(repoName) {
+      try {
+        const response = await fetch(
+          `https://api.github.com/repos/${this.user.login}/${repoName}/collaborators`,
+          {
+            headers: { Authorization: `token ${this.token}` },
+          }
+        );
+        this.collaborators.value = await response.json();
+      } catch (error) {
+        console.error("Error al obtener colaboradores:", error);
+      }
+    },
+
+
 
     logout() {
       this.token = "";
@@ -324,6 +340,7 @@ export const useAuthStore = defineStore("auth", {
       this.issues = [];
       this.pullRequests = [];
       this.commits = [];
+      this.collaborators = [];
       localStorage.removeItem("github_token");
       localStorage.removeItem("github_user");
       localStorage.removeItem("github_repos");
