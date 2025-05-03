@@ -6,11 +6,17 @@
         <h1>GitHub Insights</h1>
       </div>
       <nav>
-        <router-link to="/">Inicio</router-link>
-        <router-link to="/tickets">Tickets</router-link>
-        <router-link v-if="authStore.user" to="/search">Buscar Repositorios</router-link>
-        <router-link v-else to="/token">Obtener Token</router-link>
+        <router-link to="/">{{ $t("nav.home") }}</router-link>
+        <router-link v-if="authStore.user" to="/tickets">{{ $t("nav.tickets") }}</router-link>
+        <router-link v-if="authStore.user" to="/search">{{ $t("nav.search") }}</router-link>
+        <router-link v-else to="/token">{{ $t("nav.token") }}</router-link>
       </nav>
+
+      <!-- Selector de idioma -->
+      <select v-model="locale" class="lang-select">
+        <option value="es">Español</option>
+        <option value="en">English</option>
+      </select>
     </header>
 
     <main>
@@ -18,7 +24,7 @@
     </main>
 
     <footer class="app-footer">
-      <p>&copy; 2025 GitHub Insights. Todos los derechos reservados.</p>
+      <p>&copy; 2025 GitHub Insights. {{ $t("footer.rights") }}</p>
       <div class="social-icons">
         <font-awesome-icon :icon="['fab', 'github']" class="social-icon" />
         <font-awesome-icon :icon="['fab', 'twitter']" class="social-icon" />
@@ -32,8 +38,16 @@
 <script setup>
 import { useAuthStore } from "./stores/authStore";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useI18n } from "vue-i18n";
+import { watch } from "vue";
 
 const authStore = useAuthStore();
+const { locale } = useI18n();
+
+// Guardar idioma en localStorage
+watch(locale, (newLocale) => {
+  localStorage.setItem("locale", newLocale);
+});
 </script>
 
 <style lang="scss" scoped>
@@ -59,8 +73,8 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: height 0.3s ease-in-out;
 }
 
 .logo-container {
@@ -98,6 +112,16 @@ nav {
   }
 }
 
+.lang-select {
+  background: white;
+  color: $app-dark;
+  border-radius: 5px;
+  padding: 5px 10px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 .app-footer {
   background: $app-dark;
   color: white;
@@ -107,7 +131,7 @@ nav {
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 5rem;  
+  height: 5rem;
 }
 
 .social-icons {
@@ -136,21 +160,16 @@ nav {
   }
 
   nav {
-    display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
     gap: 10px;
-    position: static;
-    transform: none;
   }
 
   nav a {
-    display: block;
     width: 100%;
     text-align: center;
     padding: 10px 0;
   }
 }
-
 </style>

@@ -1,4 +1,13 @@
 {
+    "nav": {
+        "home": "Inicio",
+        "tickets": "Tickets",
+        "search": "Buscar Repositorios",
+        "token": "Obtener Token"
+    },
+    "footer": {
+        "rights": "Todos los derechos reservados."
+    },
     "bienvenido": "Bienvenido",
     "sin_biografia": "Sin biografía",
     "repos_publicos": "Repositorios Públicos",

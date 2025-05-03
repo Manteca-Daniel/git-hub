@@ -8,21 +8,23 @@ import Toast from 'vue-toastification';
 import 'vue-toastification/dist/index.css';
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faGithub, faTwitter, faLinkedin } from "@fortawesome/free-brands-svg-icons";
+import { faGithub, faTwitter, faLinkedin, faFacebook } from "@fortawesome/free-brands-svg-icons";
 
-// 🔥 NUEVO: Importar vue-i18n y archivos de idioma
+// ✅ i18n
 import { createI18n } from 'vue-i18n';
 import en from './locales/en.json';
 import es from './locales/es.json';
 
-// Configurar i18n
+const defaultLocale = localStorage.getItem('locale') || 'es';
+
 const i18n = createI18n({
-    locale: 'es',
+    legacy: false,
+    locale: defaultLocale,
     fallbackLocale: 'en',
     messages: { en, es }
 });
 
-library.add(faGithub, faTwitter, faLinkedin);
+library.add(faGithub, faTwitter, faLinkedin, faFacebook);
 
 const app = createApp(App);
 const pinia = createPinia();
