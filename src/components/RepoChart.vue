@@ -31,7 +31,7 @@ export default defineComponent({
             labels: ['Commits', 'Issues', 'Pull Requests'],
             datasets: [
                 {
-                    label: 'Cantidad',
+                    label: $t('cantidad'),
                     data: [props.commits.length, props.issues.length, props.pullRequests.length],
                     backgroundColor: ['#3498db', '#e74c3c', '#2ecc71']
                 }
@@ -42,7 +42,7 @@ export default defineComponent({
             responsive: true,
             plugins: {
                 legend: { display: true },
-                title: { display: true, text: 'Resumen del Repositorio' }
+                title: { display: true, text: t('resumen_repositorio') }
             }
         };
 

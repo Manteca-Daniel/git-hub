@@ -15,7 +15,7 @@
         <section class="token-section">
             <h2>{{ $t('token.como_obtener_titulo') }}</h2>
             <ol>
-                <li>Dirígete a <a href="https://github.com/settings/tokens" target="_blank">Configuración de Tokens en GitHub</a>.</li>
+                <li>{{ $t("dirigite_a") }} <a href="https://github.com/settings/tokens" target="_blank">{{ $t("configuracion_tokens_git") }}</a>.</li>
                 <li>{{ $t('token.paso_2') }}</li>
                 <li>{{ $t('token.paso_3') }}</li>
                 <li>{{ $t('token.paso_4') }}</li>

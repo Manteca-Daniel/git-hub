@@ -67,5 +67,26 @@
     "repositorio_cargado": "Repositorio cargado correctamente",
     "error_cargar_repositorio": "Error al cargar el repositorio",
     "rama_creada_exito": "Rama \"{nombre}\" creada con éxito!",
-    "nombre_rama_vacio": "El nombre de la rama no puede estar vacío"
+    "nombre_rama_vacio": "El nombre de la rama no puede estar vacío",
+    "dirigite_a": "Dirígete a",
+    "configuracion_tokens_git": "Configuración de Tokens en GitHub",
+    "proyecto_existente": "¿Quieres subir un proyecto existente desde tu ordenador a este repositorio?",
+    "cantidad": "Cantidad",
+    "buscar_nombre_repo": "Nombre del repositorio",
+    "buscar": "Buscar",
+    "buscando_repos": "Buscando repositorios...",
+    "anterior": "Anterior",
+    "siguiente": "Siguiente",
+    "pagina": "Página",
+    "crear_issue_en": "Crear un Issue en",
+    "titulo_issue": "Título del issue",
+    "descripcion_issue": "Descripción",
+    "enviar": "Enviar",
+    "cancelar": "Cancelar",
+    "search": {
+        "empty_field": "El campo de búsqueda no puede estar vacío.",
+        "no_results": "No se encontraron repositorios.",
+        "error": "Hubo un error en la búsqueda. Inténtalo de nuevo.",
+        "fill_fields": "Por favor, completa ambos campos."
+    }
 }

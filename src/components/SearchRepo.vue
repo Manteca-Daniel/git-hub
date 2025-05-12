@@ -1,39 +1,59 @@
 <template>
   <div class="search-container">
-    <h2>Buscar Repositorio</h2>
+    <h2>{{ $t("nav.search") }}</h2>
     <div class="search-box">
-      <input v-model="searchQuery" placeholder="Nombre del repositorio" class="search-input" />
-      <button @click="search" class="search-button" :disabled="loading">Buscar</button>
+      <input
+        v-model="searchQuery"
+        :placeholder="$t('buscar_nombre_repo')"
+        class="search-input"
+      />
+      <button @click="search" class="search-button" :disabled="loading">
+        {{ $t("buscar") }}
+      </button>
     </div>
-    
-    <p v-if="loading" class="loading">Buscando repositorios...</p>
+
+    <p v-if="loading" class="loading">{{ $t("buscando_repos") }}</p>
     <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-    
+
     <ul v-if="searchResults.length > 0" class="repo-list">
       <li v-for="repo in searchResults" :key="repo.id" class="repo-item">
         <div class="repo-info">
-          <a :href="repo.html_url" target="_blank" class="repo-link">{{ repo.full_name }}</a>
+          <a :href="repo.html_url" target="_blank" class="repo-link">
+            {{ repo.full_name }}
+          </a>
         </div>
         <div class="repo-actions">
-          <button @click="starRepo(repo)" class="star-button">⭐ Star</button>
-          <button @click="openIssueForm(repo)" class="issue-button">📝 Issue</button>
+          <button @click="starRepo(repo)" class="star-button">⭐ {{ $t("stars") }}</button>
+          <button @click="openIssueForm(repo)" class="issue-button">📝 {{ $t("issues") }}</button>
         </div>
       </li>
     </ul>
-    
+
     <div class="pagination" v-if="searchResults.length > 0">
-      <button @click="prevPage" :disabled="page <= 1">Anterior</button>
-      <span>Página {{ page }}</span>
-      <button @click="nextPage">Siguiente</button>
+      <button @click="prevPage" :disabled="page <= 1">{{ $t("anterior") }}</button>
+      <span>{{ $t("pagina") }} {{ page }}</span>
+      <button @click="nextPage">{{ $t("siguiente") }}</button>
     </div>
 
     <div v-if="selectedRepo" class="issue-form">
-      <h3>Crear un Issue en {{ selectedRepo.full_name }}</h3>
-      <input v-model="issueTitle" placeholder="Título del issue" class="input" />
-      <textarea v-model="issueBody" placeholder="Descripción" class="textarea"></textarea>
+      <h3>{{ $t("crear_issue_en") }} {{ selectedRepo.full_name }}</h3>
+      <input
+        v-model="issueTitle"
+        :placeholder="$t('titulo_issue')"
+        class="input"
+      />
+      <textarea
+        v-model="issueBody"
+        :placeholder="$t('descripcion_issue')"
+        class="textarea"
+      ></textarea>
       <div class="button-group">
-        <button @click="submitIssue" class="submit-button">Enviar</button>
-        <button @click="selectedRepo = null" class="cancel-button">Cancelar</button>
+        <button @click="submitIssue" class="submit-button">
+          {{ $t("enviar") }}
+        </button>
+        <button @click="selectedRepo = null" class="cancel-button">
+          {{ $t("cancelar") }}
+        </button>
       </div>
     </div>
   </div>
@@ -43,8 +63,11 @@
 <script setup>
 import { ref } from "vue";
 import { useAuthStore } from "../stores/authStore";
+import { useI18n } from "vue-i18n";
 
+const { t } = useI18n();
 const authStore = useAuthStore();
+
 const searchQuery = ref("");
 const searchResults = ref([]);
 const selectedRepo = ref(null);
@@ -57,7 +80,7 @@ const perPage = 10;
 
 const search = async () => {
   if (!searchQuery.value.trim()) {
-    errorMessage.value = "El campo de búsqueda no puede estar vacío.";
+    errorMessage.value = t("search.empty_field");
     return;
   }
 
@@ -68,11 +91,11 @@ const search = async () => {
   try {
     const results = await authStore.searchRepo(searchQuery.value, page.value, perPage);
     if (results.length === 0) {
-      errorMessage.value = "No se encontraron repositorios.";
+      errorMessage.value = t("search.no_results");
     }
     searchResults.value = results;
   } catch (error) {
-    errorMessage.value = "Hubo un error en la búsqueda. Inténtalo de nuevo.";
+    errorMessage.value = t("search.error");
   }
 
   loading.value = false;
@@ -102,7 +125,7 @@ const openIssueForm = (repo) => {
 
 const submitIssue = async () => {
   if (!issueTitle.value.trim() || !issueBody.value.trim()) {
-    alert("Por favor, completa ambos campos.");
+    alert(t("search.fill_fields"));
     return;
   }
 
@@ -115,6 +138,7 @@ const submitIssue = async () => {
   selectedRepo.value = null;
 };
 </script>
+
 
 <style lang="scss" scoped>
 .search-container {

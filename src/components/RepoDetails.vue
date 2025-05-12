@@ -68,12 +68,7 @@ const commits = computed(() => authStore.commits);
 const newBranch = ref('');
 
 onMounted(async () => {
-    try {
-        await authStore.fetchRepoDetails(route.params.owner, route.params.repoName);
-        toast.success(`📦 ${t('repositorio_cargado')}`);
-    } catch (error) {
-        toast.error(`❌ ${t('error_cargar_repositorio')}`);
-    }
+    console.log('Mounted')
 });
 
 const createBranch = () => {

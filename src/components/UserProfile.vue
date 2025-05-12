@@ -86,7 +86,7 @@ const createRepo = async () => {
   const repoName = newRepoName.value.trim();
   await authStore.createRepo(repoName);
 
-  const confirmed = confirm("¿Quieres subir un proyecto existente desde tu ordenador a este repositorio?");
+  const confirmed = confirm($t('proyecto_existente'));
   if (confirmed) {
     const repoUrl = `https://github.com/${user.login}/${repoName}.git`;
     const scriptContent = generateGitScript(repoUrl, repoName);
