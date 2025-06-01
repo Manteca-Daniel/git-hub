@@ -86,15 +86,21 @@ const createRepo = async () => {
   const repoName = newRepoName.value.trim();
   await authStore.createRepo(repoName);
 
-  const confirmed = confirm($t('proyecto_existente'));
-  if (confirmed) {
-    const repoUrl = `https://github.com/${user.login}/${repoName}.git`;
-    const scriptContent = generateGitScript(repoUrl, repoName);
-    downloadScript(scriptContent, 'subir-proyecto.sh');
+  // Asegúrate de que user y login están definidos
+  const username = user.value?.login;
+  const repoUrl = username ? `https://github.com/${username}/${repoName}.git` : null;
+
+  if (repoName && repoUrl) {
+    const confirmed = confirm("¿Deseas descargar el script para subir tu proyecto?");
+    if (confirmed) {
+      const scriptContent = generateGitScript(repoUrl, repoName);
+      downloadScript(scriptContent, `${repoName}-subir-proyecto.txt`);
+    }
   }
 
   newRepoName.value = '';
 };
+
 
 function generateGitScript(repoUrl, repoName) {
   return `#!/bin/bash
@@ -117,22 +123,27 @@ git push origin main
 }
 
 function downloadScript(content, filename) {
-  const blob = new Blob([content], { type: 'text/x-sh' });
+  const blob = new Blob([content], { type: 'text/plain' }); // txt MIME type
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
   link.download = filename;
+  document.body.appendChild(link);
   link.click();
+  document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }
 
+
 const deleteRepo = async (repoName) => {
   await authStore.deleteRepo(repoName);
+  await authStore.fetchRepos();
 };
 
-const editDescription = (repo) => {
+const editDescription = async (repo) => {
   repo.editing = true;
   repo.newDescription = repo.description;
+  await authStore.fetchRepos();
 };
 
 const saveDescription = async (repo) => {
@@ -140,6 +151,7 @@ const saveDescription = async (repo) => {
     await authStore.updateRepoDescription(repo.name, repo.newDescription);
     repo.description = repo.newDescription;
     repo.editing = false;
+    await authStore.fetchRepos();
   } catch (error) {
     console.error("Error actualizando la descripción:", error);
   }

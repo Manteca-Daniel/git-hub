@@ -16,6 +16,9 @@
       <select v-model="locale" class="lang-select">
         <option value="es">Español</option>
         <option value="en">English</option>
+        <option value="fr">Français</option>
+        <option value="al">Deutsch</option>
+        <option value="jp">日本語(Japanese)</option>
       </select>
     </header>
 

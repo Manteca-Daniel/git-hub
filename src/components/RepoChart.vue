@@ -16,6 +16,7 @@ import {
     CategoryScale,
     LinearScale
 } from 'chart.js';
+import { useI18n } from 'vue-i18n';
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
@@ -27,11 +28,13 @@ export default defineComponent({
         commits: Array
     },
     setup(props) {
+        const { t } = useI18n(); // Importante para usar traducciones
+
         const chartData = computed(() => ({
             labels: ['Commits', 'Issues', 'Pull Requests'],
             datasets: [
                 {
-                    label: $t('cantidad'),
+                    label: t('cantidad'),
                     data: [props.commits.length, props.issues.length, props.pullRequests.length],
                     backgroundColor: ['#3498db', '#e74c3c', '#2ecc71']
                 }

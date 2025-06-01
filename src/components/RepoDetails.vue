@@ -36,15 +36,18 @@
             <h3>{{ $t('commits') }}</h3>
             <ul class="repo-list">
                 <li v-for="commit in commits" :key="commit.sha" class="repo-item">
-                    <span>{{ $t('commit') }}: {{ commit.commit.message }}</span>
+                    <span>{{ commit.commit.message }}</span>
                 </li>
             </ul>
         </section>
 
         <div class="branch-creator">
-            <input v-model="newBranch" :placeholder="$t('nombre_nueva_rama')" class="input" />
-            <button @click="createBranch" class="button">{{ $t('crear_rama') }}</button>
+            <input v-model="newBranch" placeholder="Nombre de la nueva rama" class="input" />
+            <button @click="createBranch" class="button">Crear Rama</button>
         </div>
+    </div>
+    <div v-else>
+        <p>Cargando detalles del repositorio...</p>
     </div>
 </template>
 
@@ -65,22 +68,29 @@ const repoDetails = computed(() => authStore.repoDetails);
 const issues = computed(() => authStore.issues);
 const pullRequests = computed(() => authStore.pullRequests);
 const commits = computed(() => authStore.commits);
+const repoReady = computed(() =>
+    issues.value && pullRequests.value && commits.value
+)
 const newBranch = ref('');
 
 onMounted(async () => {
-    console.log('Mounted')
+    console.log('Owner:', route.params.owner, 'Repo:', route.params.repoName);
+    try {
+        await authStore.fetchRepoDetails(route.params.owner, route.params.repoName);
+        console.log('repoDetails después de fetch:', repoDetails.value);
+    } catch (error) {
+        console.error(error);
+        toast.error("❌ Error al cargar el repositorio.");
+    }
 });
 
 const createBranch = () => {
-    const owner = route.params.owner;
-    const repoName = route.params.repoName;
-
     if (newBranch.value.trim()) {
-        authStore.createBranch(owner, repoName, newBranch.value.trim());
-        toast.success(`✅ ${t('rama_creada_exito', { nombre: newBranch.value })}`);
+        authStore.createBranch(route.params.repoName, newBranch.value.trim());
+        toast.success(`✅ Rama "${newBranch.value}" creada con éxito!`);
         newBranch.value = '';
     } else {
-        toast.error(`⚠️ ${t('nombre_rama_vacio')}`);
+        toast.error('⚠️ El nombre de la rama no puede estar vacío');
     }
 };
 </script>

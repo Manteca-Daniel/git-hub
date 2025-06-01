@@ -110,6 +110,10 @@ export const useAuthStore = defineStore("auth", {
         console.error("Error en la actualización:", error);
       }
     },
+
+
+
+
     async fetchRepoDetails(owner, repoName) {
       if (!this.token) return;
 
@@ -125,6 +129,7 @@ export const useAuthStore = defineStore("auth", {
           throw new Error("Error al obtener detalles del repositorio");
         }
 
+        console.log('Repositorios obtenidos con exito');
         const data = await response.json();
         this.repoDetails = {
           name: data.name,
@@ -140,6 +145,11 @@ export const useAuthStore = defineStore("auth", {
         console.error("Error al obtener detalles del repositorio:", error);
       }
     },
+
+
+
+
+
     async fetchIssues(owner, repoName) {
       try {
         const response = await fetch(
@@ -181,6 +191,8 @@ export const useAuthStore = defineStore("auth", {
         console.error("Error al obtener commits:", error);
       }
     },
+
+
     async createBranch(repoName, branchName) {
       try {
         const response = await fetch(

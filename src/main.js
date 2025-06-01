@@ -14,6 +14,9 @@ import { faGithub, faTwitter, faLinkedin, faFacebook } from "@fortawesome/free-b
 import { createI18n } from 'vue-i18n';
 import en from './locales/en.json';
 import es from './locales/es.json';
+import al from './locales/al.json';
+import jp from './locales/jp.json';
+import fr from './locales/fr.json';
 
 const defaultLocale = localStorage.getItem('locale') || 'es';
 
@@ -21,7 +24,7 @@ const i18n = createI18n({
     legacy: false,
     locale: defaultLocale,
     fallbackLocale: 'en',
-    messages: { en, es }
+    messages: { en, es, jp, fr, al }
 });
 
 library.add(faGithub, faTwitter, faLinkedin, faFacebook);
