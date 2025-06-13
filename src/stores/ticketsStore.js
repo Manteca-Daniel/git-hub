@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import {getTicketsApi, putTicketsApi} from "@/api/api" // Adjust the import path as necessary
+import {getTicketsApi, putTicketsApi, addTicketsApi, deleteTicketApi} from "@/api/api" // Adjust the import path as necessary
 
 const useTicketsStore = defineStore("tickets", () => {
     const tickets = ref([]);
@@ -27,6 +27,27 @@ const useTicketsStore = defineStore("tickets", () => {
     };
     
 
-    return { tickets, loading, error, getTickets, modificarTicket };
+    const addTicket = async (ticket) => {
+        console.log('Creando ticket:', ticket); // Log the ticket being created
+        try {
+            const response = await addTicketsApi(ticket);
+            tickets.value.push(response);
+        } catch (err) {
+            error.value = err.message;
+        }
+    }
+
+    const eliminarTicketPorId = async (id_ticket) => {
+        try {
+            const result = await deleteTicketApi(id_ticket);
+            tickets.value = tickets.value.filter(ticket => ticket.id !== id_ticket);
+            return result;
+        } catch (error) {
+            console.error('Error al eliminar el ticket desde el store:', error);
+            throw error;
+        }
+    }
+
+    return { tickets, loading, error, getTickets, modificarTicket, addTicket, eliminarTicketPorId };
 });
 export default useTicketsStore;

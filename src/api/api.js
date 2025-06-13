@@ -18,6 +18,27 @@ export const getTicketsApi = async (urlRepo) => {
     }
 };
 
+export const addTicketsApi = async (ticket) => {
+    try {
+        console.log('Ticket a crear:', ticket); // Log the ticket being created
+        const response = await apiClient.post(
+            '/tickets',
+            {
+                encabezado: ticket.encabezado,
+                descripcion: ticket.descripcion,
+                idf_tipo_ticket: ticket.idf_tipo_ticket,
+                idf_tipo_estado: ticket.idf_tipo_estado,
+                repositorio: ticket.repositorio,
+                owner: ticket.owner
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error al crear el ticket:', error);
+        throw error;
+    }
+};
+
 export const putTicketsApi = async (ticket) => {
     try {
         console.log('Ticket a modificar:', ticket); // Log the ticket being modified
@@ -29,7 +50,8 @@ export const putTicketsApi = async (ticket) => {
                 idf_tipo_ticket: ticket.idf_tipo_ticket,
                 idf_tipo_estado: ticket.idf_tipo_estado,
                 repositorio: ticket.repositorio,
-                owner: ticket.owner
+                owner: ticket.owner,
+                id_ticket: ticket.id_ticket 
             }
         );
         return response.data;
@@ -62,6 +84,14 @@ export const getEstadosApi = async (urlRepo) => {
     }
 };
 
-
+export const deleteTicketApi = async (id_ticket) => {
+    try {
+        const response = await apiClient.delete(`/tickets/${id_ticket}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error al eliminar el ticket:', error);
+        throw error;
+    }
+};
 
 export default apiClient;

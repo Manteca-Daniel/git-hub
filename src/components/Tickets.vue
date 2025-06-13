@@ -16,10 +16,102 @@
             </select>
 
             <div v-if="selectedRepo">
-                <h3 class="subtitle">Tickets para <span>{{ selectedRepo.name }}</span></h3>
-
+                <div class="ticket-header">
+                    <h3 class="subtitle">Tickets para <span>{{ selectedRepo.name }}</span></h3>
+                    <button class="btn add-ticket-btn" @click="showAddTicket = true">
+                      <span class="add-icon">➕</span> Añadir Ticket
+                    </button>
+                    <div v-if="showAddTicket" class="modal-overlay">
+                        <div class="modal modern-modal">
+                            <div class="modal-header">
+                                <h3>📝 Nuevo Ticket</h3>
+                                <button class="modal-close" @click="showAddTicket = false">✖</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="modal-field">
+                                    <label>Encabezado</label>
+                                    <input v-model="newTicket.encabezado" class="edit-input" placeholder="Encabezado" />
+                                </div>
+                                <div class="modal-field">
+                                    <label>Descripción</label>
+                                    <textarea v-model="newTicket.descripcion" class="edit-input" placeholder="Descripción" rows="3"></textarea>
+                                </div>
+                                <div class="modal-field">
+                                    <label>Propietario</label>
+                                    <select v-model="newTicket.owner" class="edit-input">
+                                        <option value="" disabled>Selecciona propietario</option>
+                                        <option v-for="colaborador in authStore.collaborators.value" :key="colaborador.login" :value="colaborador.login">
+                                            {{ colaborador.login }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="modal-field">
+                                    <label>Tipo de Ticket</label>
+                                    <select v-model="newTicket.idf_tipo_ticket" class="edit-input">
+                                        <option value="" disabled>Selecciona tipo ticket</option>
+                                        <option v-for="tipoTicket in tiposTicketsStore.tiposTickets" :key="tipoTicket.id_tipo_ticket" :value="tipoTicket.id_tipo_ticket">
+                                            {{ tipoTicket.descripcion }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="modal-field">
+                                    <label>Estado</label>
+                                    <select v-model="newTicket.idf_tipo_estado" class="edit-input">
+                                        <option value="" disabled>Selecciona estado</option>
+                                        <option v-for="estado in estadosStore.estados" :key="estado.id_estado" :value="estado.id_estado">
+                                            {{ estado.descripcion }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-actions">
+                                <button class="btn save" @click="addNewTicket">Guardar</button>
+                                <button class="btn cancel" @click="showAddTicket = false">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket-filters modern-filters">
+                  <div class="filters-row">
+                    <div class="filter-group">
+                      <label class="filter-label">Usuario</label>
+                      <select v-model="userFilter" class="select filter-select">
+                        <option value="">Todos</option>
+                        <option v-for="colaborador in authStore.collaborators.value" :key="colaborador.login" :value="colaborador.login">
+                          {{ colaborador.login }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="filter-group">
+                      <label class="filter-label">Estado</label>
+                      <div class="estado-checkbox-group modern-checkbox-group">
+                        <label v-for="estado in estadosStore.estados" :key="estado.id_estado" class="checkbox-label modern-checkbox">
+                          <input type="checkbox" :value="estado.id_estado" v-model="estadoRepoFilter" />
+                          <span class="checkmark"></span>
+                          {{ estado.descripcion }}
+                        </label>
+                      </div>
+                    </div>
+                    <div class="filter-group">
+                      <label class="filter-label">Ordenar por</label>
+                      <select v-model="orderBy" class="select order-select">
+                        <option value="">Sin orden</option>
+                        <option value="estado">Estado</option>
+                        <option value="encabezado">Encabezado</option>
+                        <option value="usuario">Usuario</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="filters-actions">
+                    <button class="btn reset-filters" @click="resetFilters">🔄 Restablecer filtros</button>
+                  </div>
+                </div>
                 <ul class="ticket-list">
-                    <li v-for="(ticket, index) in ticketsStore.tickets || []" :key="index" :class="['ticket-card', estadoColorClase(ticket.idf_tipo_estado)]">
+                  <template v-if="filteredTickets.length === 0">
+                    <li class="no-results">No hay tickets que coincidan con los filtros seleccionados.</li>
+                  </template>
+                  <template v-else>
+                    <li v-for="(ticket, index) in filteredTickets" :key="index" :class="['ticket-card', estadoColorClase(ticket.idf_tipo_estado)]">
                         <div class="ticket-content">
                             <template v-if="editIndex === index">
                                 <template v-if="editIndex === index">
@@ -80,19 +172,43 @@
                             </div>
                         </div>
                     </li>
+                  </template>
                 </ul>
-
-                <form @submit.prevent="addTicket" class="ticket-form">
-                    <input v-model="newTicketTitle" placeholder="Título del ticket" class="form-input" required />
-                    <button type="submit" class="btn add">Añadir Ticket</button>
-                </form>
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, reactive, watch } from "vue";
+const showAddTicket = ref(false);
+const newTicket = ref({
+    encabezado: '',
+    descripcion: '',
+    owner: '',
+    idf_tipo_ticket: '',
+    idf_tipo_estado: ''
+});
+
+async function addNewTicket() {
+    if (!newTicket.value.encabezado || !newTicket.value.descripcion || !newTicket.value.owner || !newTicket.value.idf_tipo_ticket || !newTicket.value.idf_tipo_estado) {
+        alert('Por favor, rellena todos los campos.');
+        return;
+    }
+    try {
+        await ticketsStore.addTicket({
+            ...newTicket.value,
+            repositorio: selectedRepo.value.url,
+            repo: selectedRepo.value.name
+        });
+        await ticketsStore.getTickets(selectedRepo.value.url);
+        showAddTicket.value = false;
+        newTicket.value = { encabezado: '', descripcion: '', owner: '', idf_tipo_ticket: '', idf_tipo_estado: '' };
+    } catch (err) {
+        console.log(err);
+        alert('Error al crear el ticket');
+    }
+}
+import { ref, reactive, watch, computed } from "vue";
 import { useAuthStore } from "@/stores/authStore";
 import  useTicketsStore  from "@/stores/ticketsStore"; 
 import useTiposTicketsStore from "@/stores/tiposTicketsStore";
@@ -110,6 +226,37 @@ const editTicket = ref({
     descripcion: "",
     owner: ""
 });
+const userFilter = ref("");
+const estadoRepoFilter = ref([]);
+const orderBy = ref("");
+
+const filteredTickets = computed(() => {
+  let filtered = ticketsStore.tickets || [];
+  if (estadoRepoFilter.value.length > 0) {
+    filtered = filtered.filter(ticket => estadoRepoFilter.value.includes(ticket.idf_tipo_estado));
+  }
+  if (userFilter.value) {
+    filtered = filtered.filter(ticket => ticket.owner === userFilter.value);
+  }
+  // Ordenar
+  if (orderBy.value === "estado") {
+    filtered = [...filtered].sort((a, b) => a.idf_tipo_estado - b.idf_tipo_estado);
+  } else if (orderBy.value === "encabezado") {
+    filtered = [...filtered].sort((a, b) => a.encabezado.localeCompare(b.encabezado));
+  } else if (orderBy.value === "usuario") {
+    filtered = [...filtered].sort((a, b) => (a.owner || '').localeCompare(b.owner || ''));
+  }
+  return filtered;
+});
+
+function toggleDropdown(e) {
+  const select = e.target;
+  if (select.size === 1) {
+    select.size = estadosStore.estados.length > 4 ? 4 : estadosStore.estados.length;
+  } else {
+    select.size = 1;
+  }
+}
 
 async function loadTickets(urlRepo) {
     try {
@@ -143,9 +290,10 @@ function startEdit(index, ticket) {
 
 async function saveEdit(index) {
     const originalTicket = ticketsStore.tickets[index];
-
+console.log("Original Ticket:", originalTicket);
     const updatedTicket = {
         ...editTicket.value,
+        id_ticket: originalTicket.id_ticket,
         idf_tipo_ticket: originalTicket.idf_tipo_ticket,
         idf_tipo_estado: originalTicket.idf_tipo_estado,
         repositorio: originalTicket.repositorio,
@@ -170,7 +318,6 @@ async function loadCollaborators() {
     }
 }
 
-
 function cancelEdit() {
     editIndex.value = null;
     editTicket.value = {
@@ -181,7 +328,16 @@ function cancelEdit() {
 }
 
 function deleteTicket(index) {
-    tickets[selectedRepo.value].splice(index, 1);
+    if (confirm("¿Estás seguro de que quieres eliminar este ticket?")) {
+        const ticketToDelete = ticketsStore.tickets[index];
+        ticketsStore.eliminarTicketPorId(ticketToDelete.id_ticket)
+            .then(() => {
+                ticketsStore.getTickets(selectedRepo.value.url);
+            })
+            .catch(err => {
+                console.error("Error al eliminar el ticket:", err);
+            });
+    }
 }
 
 function estadoColorClase(estadoId) {
@@ -196,11 +352,17 @@ function estadoColorClase(estadoId) {
     }
 }
 
+function resetFilters() {
+  userFilter.value = "";
+  estadoRepoFilter.value = [];
+  orderBy.value = "";
+}
+
 </script>
 
 <style scoped>
 .tickets-container {
-    max-width: 700px;
+    max-width: 90%;
     margin: 30px auto;
     padding: 20px;
     font-family: 'Segoe UI', sans-serif;
@@ -213,6 +375,13 @@ function estadoColorClase(estadoId) {
     font-size: 28px;
     margin-bottom: 20px;
     color: #333;
+}
+
+.ticket-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 .subtitle {
@@ -237,9 +406,22 @@ function estadoColorClase(estadoId) {
 }
 
 .ticket-list {
-    list-style: none;
-    padding: 0;
-    margin-bottom: 25px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  list-style: none;
+  padding: 0;
+  margin-bottom: 25px;
+}
+@media (max-width: 1100px) {
+  .ticket-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 700px) {
+  .ticket-list {
+    grid-template-columns: 1fr;
+  }
 }
 .ticket-card {
     background: #ffffff;
@@ -343,11 +525,13 @@ function estadoColorClase(estadoId) {
 .btn.delete {
     background-color: #f87171;
     color: #fff;
+    padding: 8px 12px;
 }
 
 .btn.save {
     background-color: #34d399;
     color: #fff;
+    padding: 8px 12px;
 }
 
 .btn.cancel {
@@ -355,22 +539,131 @@ function estadoColorClase(estadoId) {
     color: #fff;
 }
 
+.btn.add-ticket-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(90deg, #1f6feb 60%, #3182ce 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.08rem;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(31,111,235,0.10);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  margin-bottom: 18px;
+  margin-top: 8px;
+}
+.add-ticket-btn:hover {
+  background: linear-gradient(90deg, #3182ce 60%, #1f6feb 100%);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 4px 18px rgba(31,111,235,0.18);
+}
+.add-icon {
+  font-size: 1.3em;
+  display: flex;
+  align-items: center;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+.modal {
+    background: #fff;
+    padding: 0;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(31, 111, 235, 0.18);
+    min-width: 35vw;
+    max-width: 95vw;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: modalPop .25s cubic-bezier(.4,2,.6,1) 1;
+}
+@keyframes modalPop {
+  0% { transform: scale(0.95); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  color: #222;
+  padding: 18px 24px 12px 24px;
+  border-bottom: 1px solid #e5eaf2;
+  box-shadow: none;
+}
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #1f6feb;
+}
+.modal-close {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.modal-close:hover {
+  color: #f87171;
+}
+.modal-body {
+  padding: 22px 24px 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.modal-field label {
+  font-size: 0.98rem;
+  font-weight: 500;
+  color: #1f6feb;
+}
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 18px 24px 18px 24px;
+  background: #f7fafd;
+  border-top: 1px solid #e5eaf2;
+}
 .edit-input {
-    width: 100%;
-    padding: 10px;
-    font-size: 14px;
-    border-radius: 6px;
-    border: 1px solid #cbd5e0;
-    background: #f9fafb;
-    transition: border-color 0.2s ease;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  padding: 10px 12px;
+  font-size: 1rem;
+  background: #f8fafc;
+  transition: border-color 0.2s;
 }
-
 .edit-input:focus {
-    outline: none;
-    border-color: #3182ce;
-    background-color: #fff;
+  border-color: #1f6feb;
+  background: #fff;
+  outline: none;
 }
-
+textarea.edit-input {
+  resize: vertical;
+  min-height: 60px;
+  max-height: 180px;
+}
 .estado-listo {
   border-left-color: #38a169 !important;
 }
@@ -434,4 +727,187 @@ select.estado-default:not(:focus) {
   color: #fff !important;
 }
 
+.ticket-filters {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+.ticket-filters label {
+  font-weight: 500;
+  color: #1f6feb;
+}
+
+.ticket-filters .select[multiple] {
+  min-width: 160px;
+  max-width: 220px;
+  height: auto;
+  cursor: pointer;
+}
+
+.estado-checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-left: 10px;
+}
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.98rem;
+  color: #1f6feb;
+  font-weight: 500;
+  background: #f4f8ff;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
+}
+.checkbox-label input[type="checkbox"] {
+  accent-color: #1f6feb;
+}
+.modern-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: #f7fafd;
+  border-radius: 14px;
+  padding: 18px 24px 10px 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 12px rgba(31,111,235,0.06);
+}
+.filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  width: 100%;
+  margin-bottom: 8px;
+}
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 180px;
+}
+.filters-actions {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 0;
+}
+@media (max-width: 900px) {
+  .filters-row {
+    flex-direction: column;
+    gap: 18px;
+  }
+  .filter-group {
+    min-width: 100%;
+  }
+}
+.reset-filters {
+  align-self: flex-end;
+  margin-left: 18px;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  background: #eaf2fb;
+  color: #1f6feb;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  box-shadow: 0 1px 4px rgba(31,111,235,0.07);
+}
+.reset-filters:hover {
+  background: #1f6feb;
+  color: #fff;
+}
+.container-reset-filters{
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: 10px;
+}
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #888;
+  font-size: 1.1rem;
+  padding: 32px 0 24px 0;
+  background: #f7fafd;
+  border-radius: 12px;
+  font-weight: 500;
+}
+.modern-checkbox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  color: #1f6feb;
+  font-weight: 500;
+  background: #eaf2fb;
+  border-radius: 8px;
+  padding: 7px 18px 7px 36px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(31,111,235,0.07);
+  margin-bottom: 4px;
+}
+.modern-checkbox input[type="checkbox"] {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  z-index: 2;
+}
+.modern-checkbox .checkmark {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 20px;
+  width: 20px;
+  background-color: #fff;
+  border: 2px solid #1f6feb;
+  border-radius: 6px;
+  transition: background 0.2s, border-color 0.2s;
+  box-shadow: 0 1px 4px rgba(31,111,235,0.10);
+}
+.modern-checkbox input[type="checkbox"]:checked ~ .checkmark {
+  background: linear-gradient(135deg, #1f6feb 60%, #3182ce 100%);
+  border-color: #1f6feb;
+}
+.modern-checkbox .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+.modern-checkbox input[type="checkbox"]:checked ~ .checkmark:after {
+  display: block;
+}
+.modern-checkbox .checkmark:after {
+  left: 6px;
+  top: 2.5px;
+  width: 5px;
+  height: 11px;
+  border: solid #fff;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+  content: "";
+  position: absolute;
+}
+.modern-checkbox:hover .checkmark {
+  border-color: #3182ce;
+  box-shadow: 0 2px 8px rgba(31,111,235,0.13);
+}
 </style>
+
