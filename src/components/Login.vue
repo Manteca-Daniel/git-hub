@@ -1,21 +1,39 @@
 <template>
     <div class="login-container">
-        <h2>{{ $t('login_git') }}</h2>
-        <input v-model="token" placeholder="Introduce tu token" class="input" />
-        <button @click="login" class="button">Login</button>
+        <h1>Iniciar sesión con GitHub</h1>
+        <button @click="loginWithGitHub">Login con GitHub</button>
     </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useAuthStore } from '../stores/authStore';
+const CLIENT_ID = 'Ov23lifQwdIouclDvvnr'; // Reemplázalo con el real
 
-const authStore = useAuthStore();
-const token = ref('');
+const loginWithGitHub = () => {
+    const redirectUri = encodeURIComponent('http://localhost:5173/callback');
+    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${redirectUri}&scope=repo,user`;
 
-const login = () => {
-    if (token.value) {
-        authStore.loginWithToken(token.value);
-    }
+    window.location.href = githubAuthUrl;
 };
 </script>
+
+<style scoped>
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 100px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #24292e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #444;
+}
+</style>

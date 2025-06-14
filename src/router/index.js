@@ -4,6 +4,7 @@ import RepoDetails from '../views/RepoView.vue';
 import SearchRepo from '../views/SearchView.vue';
 import Token from '../views/TokenView.vue';
 import Tickets from '../views/TicketsView.vue';
+import CallbackView from '../views/CallbackView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,6 +19,12 @@ const router = createRouter({
       path: '/token',
       name: 'token',
       component: Token,
+      props: true
+    },
+    {
+      path: '/callback',
+      name: 'callback',
+      component: CallbackView,
       props: true
     },
     {
