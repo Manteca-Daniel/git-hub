@@ -48,6 +48,10 @@ const useTicketsStore = defineStore("tickets", () => {
         }
     }
 
-    return { tickets, loading, error, getTickets, modificarTicket, addTicket, eliminarTicketPorId };
+    const getTicketById = (id_ticket) => {
+        return tickets.value.find(ticket => ticket.id_ticket === id_ticket);
+    };
+
+    return { tickets, loading, error, getTickets, modificarTicket, addTicket, eliminarTicketPorId, getTicketById };
 });
 export default useTicketsStore;

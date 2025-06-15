@@ -98,12 +98,12 @@
                         <option value="">{{ $t('sin_orden') }}</option>
                         <option value="estado">{{ $t('estado') }}</option>
                         <option value="encabezado">{{ $t('encabezado') }}</option>
-                        <option value="usuario">{{ $t('usuario') }}</option>
+                        <option value="usuario">{{ $t('user') }}</option>
                       </select>
                     </div>
                   </div>
                   <div class="filters-actions">
-                    <button class="btn reset-filters" @click="resetFilters">🔄 {{ $t('restablecer_filtros') }}</button>
+                    <button class="btn reset-filters" @click="resetFilters">🔄 {{ $t('restablecer_flitros') }}</button>
                   </div>
                 </div>
                 <ul class="ticket-list">
@@ -146,13 +146,13 @@
                             </template>
                             <template v-else>
                                 <div class="ticket-details">
-                                    <select v-model="ticket.idf_tipo_estado" :class="['select-estado', estadoColorClase(ticket.idf_tipo_estado)]" @change="$event.target.blur(), startEdit(index, ticket), saveEdit(index)">
+                                    <select v-model="ticket.idf_tipo_estado" :class="['select-estado', estadoColorClase(ticket.idf_tipo_estado)]" @change="$event.target.blur(), onEstadoChange(ticket, index)">
                                         <option value="" disabled>{{ $t('select_un_estado') }}</option>
                                         <option v-for="estado in estadosStore.estados" :key="estado.id_estado" :value="estado.id_estado">
                                             {{ estado.descripcion }}
                                         </option>
                                     </select>
-                                    <select v-model="ticket.idf_tipo_ticket" class="select-tipo-ticket" @change="$event.target.blur(), startEdit(index, ticket), saveEdit(index)">
+                                    <select v-model="ticket.idf_tipo_ticket" class="select-tipo-ticket" @change="$event.target.blur(), startEdit(index, ticket), saveEdit(ticket.id_ticket)">
                                         <option value="" disabled>{{ $t('select_tipo_tickets') }}</option>
                                         <option v-for="tipoTicket in tiposTicketsStore.tiposTickets" :key="tipoTicket.id_tipo_ticket" :value="tipoTicket.id_tipo_ticket">
                                             {{ tipoTicket.descripcion }}
@@ -162,7 +162,7 @@
                             </template>
                             <div class="ticket-actions-buttons">
                                 <template v-if="editIndex === index">
-                                    <button @click="saveEdit(index)" class="btn save">💾</button>
+                                    <button @click="saveEdit(ticket.id_ticket)" class="btn save">💾</button>
                                     <button @click="cancelEdit" class="btn cancel">✖</button>
                                 </template>
                                 <template v-else>
@@ -180,6 +180,20 @@
 </template>
 
 <script setup>
+import { ref, reactive, watch, computed } from "vue";
+import { useAuthStore } from "@/stores/authStore";
+import  useTicketsStore  from "@/stores/ticketsStore"; 
+import useTiposTicketsStore from "@/stores/tiposTicketsStore";
+import useEstadosStore from "@/stores/estadosStore";
+import { useI18n } from 'vue-i18n';
+
+const tiposTicketsStore = useTiposTicketsStore();
+const estadosStore = useEstadosStore();
+const authStore = useAuthStore();
+const ticketsStore = useTicketsStore(); 
+
+const { t: $t } = useI18n();
+
 const showAddTicket = ref(false);
 const newTicket = ref({
     encabezado: '',
@@ -208,15 +222,6 @@ async function addNewTicket() {
         alert('Error al crear el ticket');
     }
 }
-import { ref, reactive, watch, computed } from "vue";
-import { useAuthStore } from "@/stores/authStore";
-import  useTicketsStore  from "@/stores/ticketsStore"; 
-import useTiposTicketsStore from "@/stores/tiposTicketsStore";
-import useEstadosStore from "@/stores/estadosStore";
-const tiposTicketsStore = useTiposTicketsStore();
-const estadosStore = useEstadosStore();
-const authStore = useAuthStore();
-const ticketsStore = useTicketsStore(); 
 const selectedRepo = ref("");
 const newTicketTitle = ref("");
 const tickets = reactive({});
@@ -272,25 +277,14 @@ watch(selectedRepo, async (newRepo) => {
     await loadCollaborators(); 
 });
 
-function addTicket() {
-    if (!tickets[selectedRepo.value]) {
-        tickets[selectedRepo.value] = [];
-    }
-    tickets[selectedRepo.value].push({
-        title: newTicketTitle.value,
-        author: authStore.user?.login || $t('anonimo'),
-    });
-    newTicketTitle.value = "";
-}
 
 function startEdit(index, ticket) {
     editIndex.value = index;
     editTicket.value = { ...ticket }; 
 }
 
-async function saveEdit(index) {
-    const originalTicket = ticketsStore.tickets[index];
-console.log("Original Ticket:", originalTicket);
+async function saveEdit(id_ticket) {
+    const originalTicket = ticketsStore.getTicketById(id_ticket);
     const updatedTicket = {
         ...editTicket.value,
         id_ticket: originalTicket.id_ticket,
@@ -356,6 +350,13 @@ function resetFilters() {
   userFilter.value = "";
   estadoRepoFilter.value = [];
   orderBy.value = "";
+}
+
+function onEstadoChange(ticket, index) {
+    // Guarda el id_ticket antes de que el computed regenere la lista
+    editTicketId.value = ticket.id_ticket;
+    startEdit(index, ticket);
+    saveEdit();
 }
 
 </script>
