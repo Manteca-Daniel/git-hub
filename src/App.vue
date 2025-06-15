@@ -66,6 +66,7 @@ $app-gradient: linear-gradient(135deg, #1f6feb, #27496d);
 }
 
 main {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   padding-bottom: 10rem;
   padding-top: 2rem;
 }

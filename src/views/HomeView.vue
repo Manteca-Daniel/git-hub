@@ -1,9 +1,5 @@
 <template>
     <div class="home-container">
-        <template v-if="!authStore.user">
-            <img src="https://guias.donweb.com/wp-content/uploads/2023/12/Como-usar-GitHub-con-WordPress.jpg" alt="Github imagen" class="home-image">
-            <h1>GitHub Insights</h1>
-        </template>
         <UserProfile v-if="authStore.user" />
         <Login v-else />
     </div>

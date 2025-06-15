@@ -1,7 +1,10 @@
 <template>
     <div class="callback-container">
-        <p v-if="loading">{{ $t('autenticando_con_gtihub') }}</p>
-        <p v-else-if="error">{{ error }}</p>
+        <div v-if="loading" class="spinner-wrapper">
+            <div class="spinner"></div>
+            <span class="loader-text">{{ $t('autenticando_con_gtihub') }}</span>
+        </div>
+        <p v-else-if="error" class="error-text">{{ error }}</p>
     </div>
 </template>
 
@@ -54,8 +57,46 @@ onMounted(async () => {
 
 <style scoped>
 .callback-container {
-    text-align: center;
-    margin-top: 100px;
-    font-size: 1.2rem;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #e2e8f0;
+    border-top: 5px solid #f57224;
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loader-text {
+    color: #24292e;
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+}
+
+.error-text {
+    color: #e53e3e;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 24px;
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
 }
 </style>
