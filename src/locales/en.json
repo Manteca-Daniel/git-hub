@@ -73,6 +73,7 @@
     "proyecto_existente": "Do you want to upload an existing project from your computer to this repository?",
     "cantidad": "Amount",
     "buscar_nombre_repo": "Repository name",
+    "buscar_nombre_repo_label" : "Find your repository",
     "buscar": "Search",
     "buscando_repos": "Searching repositories...",
     "anterior": "Previous",

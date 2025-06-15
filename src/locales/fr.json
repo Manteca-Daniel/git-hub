@@ -73,6 +73,7 @@
     "proyecto_existente": "Souhaitez-vous télécharger un projet existant depuis votre ordinateur vers ce dépôt ?",
     "cantidad": "Quantité",
     "buscar_nombre_repo": "Nom du dépôt",
+    "buscar_nombre_repo_label" : "Trouve ton dépôt",
     "buscar": "Rechercher",
     "buscando_repos": "Recherche de dépôts...",
     "anterior": "Précédent",

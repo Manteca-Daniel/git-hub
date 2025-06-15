@@ -362,7 +362,7 @@ function resetFilters() {
 
 <style scoped>
 .tickets-container {
-    max-width: 90%;
+    max-width: 95%;
     margin: 30px auto;
     padding: 20px;
     font-family: 'Segoe UI', sans-serif;
@@ -427,14 +427,13 @@ function resetFilters() {
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-left: 6px solid #3182ce;
-    padding: 20px;
+    padding: 30px;
     border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03);
     transition: all 0.3s ease;
     margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
-    gap: 20px;
     align-items: flex-start;
 }
 

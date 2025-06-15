@@ -73,6 +73,7 @@
     "proyecto_existente": "このリポジトリに既存のプロジェクトをアップロードしますか？",
     "cantidad": "件数",
     "buscar_nombre_repo": "リポジトリ名",
+    "buscar_nombre_repo_label" : "自分のリポジトリを見つけよう",
     "buscar": "検索",
     "buscando_repos": "リポジトリを検索中...",
     "anterior": "前へ",

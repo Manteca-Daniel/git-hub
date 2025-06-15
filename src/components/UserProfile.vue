@@ -21,7 +21,9 @@
       </div>
     </div>
     <div class="search-container">
+      <label for="repo-search" class="search-label">{{ $t('buscar_nombre_repo_label') }}</label>
       <input
+        id="repo-search"
         v-model="searchQuery"
         @input="filterRepos"
         :placeholder="$t('buscar_nombre_repo')"
@@ -32,8 +34,23 @@
       <li v-for="repo in filteredRepos" :key="repo.id" class="repo-item">
         <div class="repo-card">
           <div class="repo-header">
-            <h4 class="repo-title">{{ repo.name }}</h4>
-            <span class="repo-privacy" v-if="repo.private">🔒 Private</span>
+            <div class="repo-title-wrapper">
+              <span class="repo-icon">📦</span>
+              <h4 class="repo-title">{{ repo.name }}</h4>
+            </div>
+            <div
+              class="meta-item visibility"
+              :class="repo.private ? 'private' : 'public'"
+            >
+              <span class="meta-icon">
+                <template v-if="repo.private">🔒</template>
+                <template v-else>🌐</template>
+              </span>
+              <span class="meta-text">
+                <template v-if="repo.private">Private</template>
+                <template v-else>Public</template>
+              </span>
+            </div>
           </div>
 
           <div class="repo-description">
@@ -60,6 +77,11 @@
               <span class="meta-icon">🕒</span>
               <span class="meta-text">{{ new Date(repo.updated_at).toLocaleDateString() }}</span>
             </div>
+            <div class="meta-item language" v-if="repo.language">
+              <span class="meta-icon">💻</span>
+              <span class="meta-text">{{ repo.language }}</span>
+            </div>
+            
           </div>
 
           <div class="repo-actions">
@@ -175,6 +197,8 @@ function downloadScript(content, filename) {
 
 
 const deleteRepo = async (repoName) => {
+  const confirmed = confirm("¿Estás seguro de que quieres eliminar este repositorio? Esta acción no se puede deshacer.");
+  if (!confirmed) return;
   await authStore.deleteRepo(repoName);
   await authStore.fetchRepos();
 };
@@ -369,6 +393,49 @@ $border-radius: 8px;
   margin-bottom: 15px;
 }
 
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #f4f4f4;
+  border-radius: 5px;
+  padding: 2px 8px;
+}
+
+.meta-item.language {
+  background: linear-gradient(90deg, #f6d365 0%, #fda085 100%);
+  color: #222;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 1px 4px rgba(253,160,133,0.10);
+  padding: 2px 12px;
+  border-radius: 12px;
+  font-size: 0.97rem;
+  letter-spacing: 0.2px;
+  transition: background 0.2s;
+}
+
+.meta-item.visibility {
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 2px 12px;
+  font-size: 0.97rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  &.private {
+    background: #ffeaea;
+    color: #d9534f;
+    border: 1.5px solid #d9534f33;
+  }
+  &.public {
+    background: #eaf5ff;
+    color: #0366d6;
+    border: 1.5px solid #0366d633;
+  }
+}
+
 .repo-actions {
   display: flex;
   flex-wrap: wrap;
@@ -463,6 +530,22 @@ $border-radius: 8px;
 .search-container {
   margin: 20px 0;
   text-align: center;
+
+  .search-label {
+    display: block;
+    font-weight: 600;
+    color: #1f6feb;
+    margin-bottom: 8px;
+    font-size: 1.08rem;
+    letter-spacing: 0.2px;
+  }
+}
+
+.search-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
 }
 
 .search-input {
@@ -472,6 +555,30 @@ $border-radius: 8px;
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 1rem;
+}
+
+.repo-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.repo-icon {
+  font-size: 1.25rem;
+  opacity: 0.85;
+}
+
+.repo-title {
+  font-size: 1.22rem;
+  font-weight: 800;
+  color: #1f6feb;
+  letter-spacing: 0.5px;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 }
 
 @media (max-width: 768px) {

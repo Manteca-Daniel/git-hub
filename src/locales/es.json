@@ -73,6 +73,7 @@
     "proyecto_existente": "¿Quieres subir un proyecto existente desde tu ordenador a este repositorio?",
     "cantidad": "Cantidad",
     "buscar_nombre_repo": "Nombre del repositorio",
+    "buscar_nombre_repo_label" : "Encuentra tu repositorio",
     "buscar": "Buscar",
     "buscando_repos": "Buscando repositorios...",
     "anterior": "Anterior",

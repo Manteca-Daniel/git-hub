@@ -73,6 +73,7 @@
     "proyecto_existente": "Möchtest du ein bestehendes Projekt von deinem Computer in dieses Repository hochladen?",
     "cantidad": "Anzahl",
     "buscar_nombre_repo": "Name des Repositories",
+    "buscar_nombre_repo_label" : "Finde dein Repository",
     "buscar": "Suchen",
     "buscando_repos": "Repositories werden gesucht...",
     "anterior": "Zurück",

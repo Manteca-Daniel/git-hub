@@ -70,6 +70,9 @@ main {
   padding-bottom: 10rem;
   padding-top: 2rem;
 }
+* {
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+}
 
 .app-header {
   background: $app-gradient;
