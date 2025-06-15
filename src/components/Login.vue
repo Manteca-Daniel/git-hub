@@ -2,12 +2,12 @@
     <div class="login-bg">
         <div class="login-card">
             <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Logo" class="github-logo" />
-            <h1 class="login-title">Accede a tu espacio de trabajo GitHub</h1>
+            <h1 class="login-title">{{ $t('espacio_trabajo_git') }}</h1>
             <p class="login-highlight">
-                Gestiona repositorios y tickets de forma sencilla y centralizada.
+                {{ $t('gestion_repos_tickets') }}
             </p>
             <p class="login-subtitle">
-                Inicia sesión con GitHub para comenzar a organizar tus proyectos y colaborar con tu equipo.
+                {{ $t('git_organizar_proyectos') }}
             </p>
             <button @click="loginWithGitHub" class="github-btn">
                 <svg class="github-icon" viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
@@ -19,7 +19,7 @@
                     2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01
                     1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
                 </svg>
-                Iniciar sesión con GitHub
+                {{ $t('iniciar_sesión_con_gitHub') }}
             </button>
         </div>
     </div>
