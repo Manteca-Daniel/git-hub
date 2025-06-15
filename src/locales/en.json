@@ -88,5 +88,8 @@
         "no_results": "No repositories found.",
         "error": "There was an error with the search. Please try again.",
         "fill_fields": "Please fill in both fields."
-    }
+    },
+    "iniciar_sesión_con_gitHub" : "Sign in with GitHub",
+    "login_con_gitHub" : "Login with GitHub",
+    "autenticando_con_gtihub" : "Authenticating with GitHub..."
 }

@@ -1,6 +1,6 @@
 <template>
     <div class="callback-container">
-        <p v-if="loading">Autenticando con GitHub...</p>
+        <p v-if="loading">{{ $t('autenticando_con_gtihub') }}</p>
         <p v-else-if="error">{{ error }}</p>
     </div>
 </template>

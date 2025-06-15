@@ -88,5 +88,8 @@
         "no_results": "リポジトリが見つかりませんでした。",
         "error": "検索中にエラーが発生しました。もう一度お試しください。",
         "fill_fields": "両方のフィールドを入力してください。"
-    }
+    },
+    "iniciar_sesión_con_gitHub" : "GitHubでサインイン",
+    "login_con_gitHub" : "GitHubでログイン",
+    "autenticando_con_gtihub" : "GitHub で認証しています..."
 }

@@ -1,12 +1,12 @@
 <template>
     <div class="login-container">
-        <h1>Iniciar sesión con GitHub</h1>
-        <button @click="loginWithGitHub">Login con GitHub</button>
+        <h1>{{ $t('iniciar_sesión_con_gitHub') }}</h1>
+        <button @click="loginWithGitHub">{{ $t('login_con_gitHub') }}</button>
     </div>
 </template>
 
 <script setup>
-const CLIENT_ID = 'Ov23lifQwdIouclDvvnr'; // Reemplázalo con el real
+const CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 
 const loginWithGitHub = () => {
     const redirectUri = encodeURIComponent('http://localhost:5173/callback');

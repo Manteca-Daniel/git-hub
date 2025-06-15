@@ -58,6 +58,7 @@ $app-primary: #1f6feb;
 $app-dark: #2c3e50;
 $app-light: #f4f4f4;
 $app-danger: #d9534f;
+$app-gradient: linear-gradient(135deg, #1f6feb, #27496d);
 
 .container-total {
   position: relative;
@@ -70,14 +71,16 @@ main {
 }
 
 .app-header {
-  background: $app-dark;
+  background: $app-gradient;
   color: white;
-  padding: 15px 20px;
+  padding: 20px 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  border-bottom: 3px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease-in-out;
 }
 
 .logo-container {
@@ -86,47 +89,70 @@ main {
   gap: 10px;
 }
 
-.logo {
-  font-size: 2rem;
-  color: white;
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  h1 {
+    margin: 0;
+    font-size: 2.2rem;
+    font-weight: 700;
+    font-family: "Segoe UI", sans-serif;
+    letter-spacing: 1px;
+  }
 }
 
-.logo-container h1 {
-  margin: 0;
-  font-size: 2rem;
-  font-weight: bold;
+.logo {
+  font-size: 2.5rem;
+  color: white;
+  transition: transform 0.3s;
+
+  &:hover {
+    transform: scale(1.1);
+  }
 }
 
 nav {
   display: flex;
-  gap: 15px;
+  gap: 18px;
 
   a {
     color: white;
     text-decoration: none;
-    font-weight: bold;
-    padding: 8px 12px;
-    border-radius: 5px;
-    transition: background 0.3s;
+    font-weight: 600;
+    padding: 10px 16px;
+    border-radius: 6px;
+    transition: background 0.3s, transform 0.2s;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
     }
   }
 }
 
 .lang-select {
+  appearance: none;
   background: white;
-  color: $app-dark;
-  border-radius: 5px;
-  padding: 5px 10px;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20fill%3D'%232c3e50'%20height%3D'24'%20viewBox%3D'0%200%2024%2024'%20width%3D'24'%20xmlns%3D'http%3A//www.w3.org/2000/svg'%3E%3Cpath%20d%3D'M7%2010l5%205%205-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px 16px;
   border: none;
-  font-weight: bold;
+  border-radius: 6px;
+  padding: 10px 40px 10px 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #2c3e50;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   cursor: pointer;
+  transition: all 0.3s ease-in-out;
 }
 
+
 .app-footer {
-  background: $app-dark;
+  background: $app-gradient;
   color: white;
   text-align: center;
   padding-top: 15px;
@@ -151,6 +177,7 @@ nav {
 
   &:hover {
     color: $app-primary;
+    cursor: pointer;
   }
 }
 

@@ -2,11 +2,7 @@
   <div class="search-container">
     <h2>{{ $t("nav.search") }}</h2>
     <div class="search-box">
-      <input
-        v-model="searchQuery"
-        :placeholder="$t('buscar_nombre_repo')"
-        class="search-input"
-      />
+      <input v-model="searchQuery" :placeholder="$t('buscar_nombre_repo')" class="search-input" />
       <button @click="search" class="search-button" :disabled="loading">
         {{ $t("buscar") }}
       </button>
@@ -25,6 +21,10 @@
         <div class="repo-actions">
           <button @click="starRepo(repo)" class="star-button">⭐ {{ $t("stars") }}</button>
           <button @click="openIssueForm(repo)" class="issue-button">📝 {{ $t("issues") }}</button>
+          <router-link :to="`/repo/${repo.owner.login}/${repo.name}`" class="details-button">
+            🔍 {{ $t('ver_detalles') }}
+          </router-link>
+
         </div>
       </li>
     </ul>
@@ -37,16 +37,8 @@
 
     <div v-if="selectedRepo" class="issue-form">
       <h3>{{ $t("crear_issue_en") }} {{ selectedRepo.full_name }}</h3>
-      <input
-        v-model="issueTitle"
-        :placeholder="$t('titulo_issue')"
-        class="input"
-      />
-      <textarea
-        v-model="issueBody"
-        :placeholder="$t('descripcion_issue')"
-        class="textarea"
-      ></textarea>
+      <input v-model="issueTitle" :placeholder="$t('titulo_issue')" class="input" />
+      <textarea v-model="issueBody" :placeholder="$t('descripcion_issue')" class="textarea"></textarea>
       <div class="button-group">
         <button @click="submitIssue" class="submit-button">
           {{ $t("enviar") }}
@@ -150,18 +142,21 @@ const submitIssue = async () => {
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
+
 .search-box {
   display: flex;
   justify-content: center;
   gap: 10px;
   margin-bottom: 15px;
 }
+
 .search-input {
   flex: 1;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
+
 .search-button {
   background: #3498db;
   color: white;
@@ -170,14 +165,17 @@ const submitIssue = async () => {
   border-radius: 5px;
   cursor: pointer;
   transition: background 0.3s;
+
   &:hover {
     background: #2980b9;
   }
 }
+
 .repo-list {
   list-style: none;
   padding: 0;
 }
+
 .repo-item {
   background: #f9f9f9;
   margin: 10px 0;
@@ -188,18 +186,22 @@ const submitIssue = async () => {
   align-items: center;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
 .repo-link {
   font-weight: bold;
   text-decoration: none;
   color: #2c3e50;
+
   &:hover {
     color: #2980b9;
   }
 }
+
 .repo-actions {
   display: flex;
   gap: 10px;
 }
+
 .fav-button,
 .star-button,
 .issue-button,
@@ -213,24 +215,31 @@ const submitIssue = async () => {
   border-radius: 5px;
   transition: background 0.3s;
 }
+
 .issue-button {
   background: #e67e22;
+
   &:hover {
     background: #d35400;
   }
 }
+
 .submit-button {
   background: #2ecc71;
+
   &:hover {
     background: #27ae60;
   }
 }
+
 .cancel-button {
   background: #e74c3c;
+
   &:hover {
     background: #c0392b;
   }
 }
+
 .issue-form {
   background: #f5f5f5;
   padding: 20px;
@@ -238,16 +247,20 @@ const submitIssue = async () => {
   width: 100%;
   border-radius: 5px;
 }
-.input, .textarea {
+
+.input,
+.textarea {
   width: calc(100% - 20px);
   padding: 10px;
   margin: 10px 0;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
+
 .textarea {
   height: 80px;
 }
+
 .button-group {
   display: flex;
   justify-content: space-between;
@@ -257,16 +270,19 @@ const submitIssue = async () => {
   color: #3498db;
   font-weight: bold;
 }
+
 .error {
   color: #e74c3c;
   font-weight: bold;
 }
+
 .pagination {
   display: flex;
   justify-content: center;
   gap: 10px;
   margin-top: 15px;
 }
+
 .search-container {
   max-width: 600px;
   margin: 30px auto;
@@ -277,14 +293,31 @@ const submitIssue = async () => {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+.details-button {
+  background: #9b59b6;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background 0.3s;
+  display: inline-block;
+  font-weight: bold;
+
+  &:hover {
+    background: #8e44ad;
+  }
+}
+
 @media (max-width: 600px) {
   .repo-item {
     flex-direction: column;
     text-align: center;
   }
+
   .repo-actions {
     flex-direction: column;
   }
+
   .button-group {
     flex-direction: column;
   }
