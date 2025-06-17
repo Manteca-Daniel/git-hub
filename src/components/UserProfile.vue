@@ -200,7 +200,7 @@ const deleteRepo = async (repoName) => {
   const confirmed = confirm("¿Estás seguro de que quieres eliminar este repositorio? Esta acción no se puede deshacer.");
   if (!confirmed) return;
   await authStore.deleteRepo(repoName);
-  await authStore.fetchRepos();
+  repos.value = await authStore.fetchRepos();
 };
 
 const editDescription = async (repo) => {
@@ -213,7 +213,7 @@ const saveDescription = async (repo) => {
     await authStore.updateRepoDescription(repo.name, repo.newDescription);
     repo.description = repo.newDescription;
     repo.editing = false;
-    await authStore.fetchRepos();
+    repos.value = await authStore.fetchRepos();
   } catch (error) {
     console.error("Error actualizando la descripción:", error);
   }

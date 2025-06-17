@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import {buscarRepos} from "@/api/api"// Asegúrate de que tienes un archivo api.js configurado correctamente
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -16,9 +17,9 @@ export const useAuthStore = defineStore("auth", {
   actions: {
     async searchRepo(repoName) {
       try {
-        const response = await fetch(`https://api.github.com/search/repositories?q=${repoName}`);
-        const data = await response.json();
-        return data.items;
+      // Usamos la función buscarRepos que llama a tu backend
+        const data = await buscarRepos(repoName);
+        return data.items; // Asegúrate de que tu backend devuelve el objeto con .items
       } catch (error) {
         console.error('Error al buscar el repositorio:', error);
         return [];
@@ -78,6 +79,7 @@ export const useAuthStore = defineStore("auth", {
         }
         this.repos = await response.json();
         localStorage.setItem("github_repos", JSON.stringify(this.repos));
+        return this.repos;
       } catch (error) {
         console.error("Error al obtener repositorios:", error);
       }
@@ -186,9 +188,21 @@ export const useAuthStore = defineStore("auth", {
             headers: { Authorization: `token ${this.token}` },
           }
         );
+        if (response.status === 409) {
+          // 409: Repository is empty (no es un error)
+          this.commits = [];
+          return;
+        }
+        if (!response.ok) {
+          throw new Error("Error al obtener commits");
+        }
         this.commits = await response.json();
       } catch (error) {
-        console.error("Error al obtener commits:", error);
+        // Solo mostramos error si NO es un 409
+        if (error.message !== "Error al obtener commits") {
+          console.error("Error al obtener commits:", error);
+        }
+        this.commits = [];
       }
     },
 

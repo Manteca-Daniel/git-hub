@@ -30,7 +30,7 @@ const CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 
 const loginWithGitHub = () => {
     const redirectUri = encodeURIComponent('http://localhost:5173/callback');
-    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${redirectUri}&scope=repo,user`;
+    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${redirectUri}&scope=repo,user,delete_repo&prompt=consent`;
     window.location.href = githubAuthUrl;
 };
 </script>

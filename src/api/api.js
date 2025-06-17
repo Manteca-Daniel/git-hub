@@ -94,4 +94,14 @@ export const deleteTicketApi = async (id_ticket) => {
     }
 };
 
+export const buscarRepos = async (name) => {
+    try {
+        const response = await apiClient.get(`/api/search?q=${name}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error al buscar el repositorio:', error);
+        throw error;
+    }
+};
+
 export default apiClient;
