@@ -322,12 +322,32 @@ $border-radius: 8px;
   list-style: none;
   padding: 0;
 
-  @media (min-width: 768px) {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+  
+  /* @media (min-width: 1120px) {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  } */
+
+}
+@media (max-width: 1420px) {
+  .repo-list{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 15px;
   }
-}
+  }
+
+  @media (max-width: 992px) {
+    .repo-list{
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 15px;
+    }
+  }
 
 .repo-item {
   background: #f8f9fa;

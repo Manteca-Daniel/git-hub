@@ -115,7 +115,7 @@
     "sin_orden": "並び替えなし",
     "restablecer_flitros": "フィルターをリセット",
     "no_tickets_flitros": "選択したフィルターに一致するチケットはありません。",
-    "creado_por": "作成者",
+    "creado_por": "割り当て済み",
     "repo": "リポジトリ",
     "select_un_estado": "ステータスを選択",
     "select_tipo_tickets": "チケットの種類を選択",

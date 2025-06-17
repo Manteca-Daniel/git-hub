@@ -133,7 +133,13 @@
                                     <strong>{{ $t('descripcion_issue') }}:</strong> {{ ticket.descripcion }}
                                 </div>
                                 <div class="ticket-author">
-                                    <strong>{{ $t('creado_por') }}:</strong> {{ ticket.owner }}
+                                    <strong>{{ $t('creado_por') }}:</strong>
+                                    <span class="user-icon" title="Asignado">
+                                      <template v-if="ticket.owner === 'franxu99'">⭐</template>
+                                      <template v-else-if="ticket.owner === 'Manteca-Daniel'">🦸‍♂️</template>
+                                      <template v-else>👤</template>
+                                    </span>
+                                    {{ ticket.owner }}
                                 </div>
                                 <div class="ticket-repo">
                                     <strong>{{ $t('repo') }}:</strong> {{ ticket.repositorio }}
@@ -414,14 +420,113 @@ function onEstadoChange(ticket, index) {
   padding: 0;
   margin-bottom: 25px;
 }
-@media (max-width: 1100px) {
+@media (max-width: 1870px) {
   .ticket-list {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+@media (max-width: 1250px) {
+  .ticket-list {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+@media (max-width: 1100px) {
+  .ticket-card {
+    padding: 22px;
+  }
+}
+
+@media (max-width: 900px) {
+  .tickets-container {
+    padding: 10px;
+  }
+  .ticket-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .modal {
+    min-width: 90vw;
+    padding: 0;
+  }
+  .modal-header,
+  .modal-body,
+  .modal-actions {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .modern-filters {
+    padding: 12px 8px 8px 8px;
+  }
+}
+
 @media (max-width: 700px) {
   .ticket-list {
     grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .ticket-card {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 14px;
+    min-width: 0;
+  }
+  .ticket-actions {
+    min-width: unset;
+    width: 100%;
+    align-items: stretch;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .ticket-details {
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+  }
+  .modal {
+    min-width: 98vw;
+    max-width: 100vw;
+    border-radius: 8px;
+    padding: 0;
+  }
+  .modal-header,
+  .modal-body,
+  .modal-actions {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+  .modern-filters {
+    padding: 8px 4px 4px 4px;
+  }
+  .filters-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .filter-group {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 500px) {
+  .tickets-container {
+    padding: 2px;
+  }
+  .title {
+    font-size: 1.1rem;
+  }
+  .subtitle {
+    font-size: 1rem;
+  }
+  .ticket-card {
+    padding: 8px;
+    font-size: 0.97rem;
+  }
+  .modal-header h3 {
+    font-size: 1.05rem;
+  }
+  .btn {
+    font-size: 0.95rem;
+    padding: 5px 8px;
   }
 }
 .ticket-card {
@@ -908,6 +1013,16 @@ select.estado-default:not(:focus) {
 .modern-checkbox:hover .checkmark {
   border-color: #3182ce;
   box-shadow: 0 2px 8px rgba(31,111,235,0.13);
+}
+.user-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+  margin-right: 6px;
+  font-size: 1.1em;
+  color: #1f6feb;
+  vertical-align: middle;
 }
 </style>
 
