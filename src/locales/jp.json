@@ -121,5 +121,12 @@
     "select_tipo_tickets": "チケットの種類を選択",
     "rellene_todos_campos": "すべての項目を入力してください。",
     "anonimo": "匿名",
-    "eliminar_ticket_confirmacion": "このチケットを削除してもよろしいですか？"
+    "eliminar_ticket_confirmacion": "このチケットを削除してもよろしいですか？",
+    "carrusel": {
+    "visualizar_gestionar_repos": "すべてのGitHubリポジトリを1か所で表示・管理できます。",
+    "search_repo_publico": "あらゆる公開GitHubリポジトリを素早く簡単に検索できます。",
+    "stats_detalles_repos": "各リポジトリの統計情報と詳細を確認できます。",
+    "create_admin_tickets": "リポジトリに関連するチケットを簡単に作成・管理できます。"
+}
+
 }

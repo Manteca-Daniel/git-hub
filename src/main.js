@@ -17,6 +17,13 @@ import es from './locales/es.json';
 import al from './locales/al.json';
 import jp from './locales/jp.json';
 import fr from './locales/fr.json';
+import it from './locales/it.json';
+
+import ch from './locales/ch.json';
+import ct from './locales/ct.json';
+import gr from './locales/gr.json';
+import pt from './locales/pt.json';
+import bl from './locales/bl.json';
 
 const defaultLocale = localStorage.getItem('locale') || 'es';
 
@@ -24,7 +31,7 @@ const i18n = createI18n({
     legacy: false,
     locale: defaultLocale,
     fallbackLocale: 'en',
-    messages: { en, es, jp, fr, al }
+    messages: { en, es, jp, fr, al, it, ch, ct, gr, pt, bl }
 });
 
 library.add(faGithub, faTwitter, faLinkedin, faFacebook);

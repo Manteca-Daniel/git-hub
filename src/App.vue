@@ -19,6 +19,15 @@
         <option value="fr">Français</option>
         <option value="al">Deutsch</option>
         <option value="jp">日本語(Japanese)</option>
+
+        <option value="it">Italiano</option>
+        <option value="ch">中國人(Chinese)</option>
+        <option value="ct">Català</option>
+        <option value="gr">ελληνικά(Greek)</option>
+        <option value="pt">Português</option>
+        <option value="bl">беларускі(Belarusian)</option>
+        
+
       </select>
     </header>
 

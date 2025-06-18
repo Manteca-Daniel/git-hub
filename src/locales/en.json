@@ -73,7 +73,7 @@
     "proyecto_existente": "Do you want to upload an existing project from your computer to this repository?",
     "cantidad": "Amount",
     "buscar_nombre_repo": "Repository name",
-    "buscar_nombre_repo_label" : "Find your repository",
+    "buscar_nombre_repo_label": "Find your repository",
     "buscar": "Search",
     "buscando_repos": "Searching repositories...",
     "anterior": "Previous",
@@ -90,9 +90,9 @@
         "error": "There was an error with the search. Please try again.",
         "fill_fields": "Please fill in both fields."
     },
-    "iniciar_sesión_con_gitHub" : "Sign in with GitHub",
-    "login_con_gitHub" : "Login with GitHub",
-    "autenticando_con_gtihub" : "Authenticating with GitHub...",
+    "iniciar_sesión_con_gitHub": "Sign in with GitHub",
+    "login_con_gitHub": "Login with GitHub",
+    "autenticando_con_gtihub": "Authenticating with GitHub...",
     "git_organizar_proyectos": "Log in with GitHub to start organizing your projects and collaborating with your team.",
     "gestion_repos_tickets": "Manage repositories and tickets easily and centrally.",
     "espacio_trabajo_git": "Access your GitHub workspace",
@@ -121,5 +121,11 @@
     "select_tipo_tickets": "Select ticket types",
     "rellene_todos_campos": "Please fill in all fields.",
     "anonimo": "anonymous",
-    "eliminar_ticket_confirmacion": "Are you sure you want to delete this ticket?"
+    "eliminar_ticket_confirmacion": "Are you sure you want to delete this ticket?",
+    "carrusel": {
+        "visualizar_gestionar_repos": "View and manage all your GitHub repositories from one place.",
+        "search_repo_publico": "Quickly and easily search any public GitHub repository.",
+        "stats_detalles_repos": "Check full statistics and details of each repository.",
+        "create_admin_tickets": "Easily create and manage tickets linked to your repositories."
+    }
 }

@@ -1,65 +1,61 @@
 <template>
-    <div class="login-bg">
-        <div class="login-content">
-        
-        <div class="login-card">
-            <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Logo" class="github-logo" />
-            <h1 class="login-title">{{ $t('espacio_trabajo_git') }}</h1>
-            <p class="login-highlight">
-            {{ $t('gestion_repos_tickets') }}
-            </p>
-            <p class="login-subtitle">
-            {{ $t('git_organizar_proyectos') }}
-            </p>
-            <button @click="loginWithGitHub" class="github-btn">
-            <svg class="github-icon" viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
-                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+  <div class="login-bg">
+    <div class="login-content">
+
+      <div class="login-card">
+        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Logo"
+          class="github-logo" />
+        <h1 class="login-title">{{ $t('espacio_trabajo_git') }}</h1>
+        <p class="login-highlight">
+          {{ $t('gestion_repos_tickets') }}
+        </p>
+        <p class="login-subtitle">
+          {{ $t('git_organizar_proyectos') }}
+        </p>
+        <button @click="loginWithGitHub" class="github-btn">
+          <svg class="github-icon" viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
                 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52
                 -.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2
                 -3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82A7.65
                 7.65 0 0 1 8 4.77c.68.003 1.36.092 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08
                 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01
-                1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
-            </svg>
-            {{ $t('iniciar_sesión_con_gitHub') }}
-            </button>
-        </div>
-        </div>
-        <div class="carousel-container">
-            <div class="carousel">
-            <img
-                :src="carouselImages[currentImage]"
-                alt="Vista previa de la aplicación"
-                class="carousel-image"
-            />
-            <div class="carousel-text">
-              {{ carouselTexts[currentImage] }}
-            </div>
-            <div class="carousel-controls">
-                <button @click="prevImage" class="carousel-btn">‹</button>
-                <button @click="nextImage" class="carousel-btn">›</button>
-            </div>
-            <div class="carousel-dots">
-                <span
-                v-for="(img, idx) in carouselImages"
-                :key="idx"
-                :class="['dot', { active: idx === currentImage }]"
-                @click="goToImage(idx)"
-                ></span>
-            </div>
-            </div>
-        </div>
+                1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
+          </svg>
+          {{ $t('iniciar_sesión_con_gitHub') }}
+        </button>
+      </div>
     </div>
+    <div class="carousel-container">
+      <div class="carousel">
+        <img :src="carouselImages[currentImage]" alt="Vista previa de la aplicación" class="carousel-image" />
+        <div class="carousel-text">
+          {{ carouselTexts[currentImage] }}
+        </div>
+        <div class="carousel-controls">
+          <button @click="prevImage" class="carousel-btn">‹</button>
+          <button @click="nextImage" class="carousel-btn">›</button>
+        </div>
+        <div class="carousel-dots">
+          <span v-for="(img, idx) in carouselImages" :key="idx" :class="['dot', { active: idx === currentImage }]"
+            @click="goToImage(idx)"></span>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t, locale } = useI18n(); // importante: incluir `locale`
 
 const CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 
 const loginWithGitHub = () => {
   const redirectUri = encodeURIComponent('http://localhost:5173/callback');
-  const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${redirectUri}&scope=repo,user,delete_repo&prompt=consent`;
+  const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${redirectUri}&scope=repo,user,delete_repo&prompt=consent;`;
   window.location.href = githubAuthUrl;
 };
 
@@ -70,12 +66,12 @@ const carouselImages = [
   '/nuevos_ticket.png'
 ];
 
-const carouselTexts = [
-  "Visualiza y gestiona todos tus repositorios de GitHub desde un solo lugar.",
-  "Busca cualquier repositorio público de GitHub de forma rápida y sencilla.",
-  "Consulta estadísticas y detalles completos de cada repositorio.",
-  "Crea y administra tickets vinculados a tus repositorios fácilmente."
-];
+const carouselTexts = computed(() => [
+  t('carrusel.visualizar_gestionar_repos'),
+  t('carrusel.search_repo_publico'),
+  t('carrusel.stats_detalles_repos'),
+  t('carrusel.create_admin_tickets')
+]);
 
 const currentImage = ref(0);
 let intervalId = null;
@@ -130,7 +126,7 @@ onUnmounted(() => {
   height: 100%;
   background: #fff;
   border-radius: 18px;
-  box-shadow: 0 4px 18px rgba(36,41,46,0.10);
+  box-shadow: 0 4px 18px rgba(36, 41, 46, 0.10);
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -153,7 +149,7 @@ onUnmounted(() => {
   bottom: 0;
   left: 0;
   width: 100%;
-  background: linear-gradient(0deg, rgba(36,41,46,0.85) 80%, rgba(36,41,46,0.05) 100%);
+  background: linear-gradient(0deg, rgba(36, 41, 46, 0.85) 80%, rgba(36, 41, 46, 0.05) 100%);
   color: #fff;
   font-size: 1.08rem;
   font-weight: 500;
@@ -164,7 +160,7 @@ onUnmounted(() => {
   text-align: left;
   letter-spacing: 0.2px;
   z-index: 2;
-  text-shadow: 0 2px 8px rgba(36,41,46,0.18);
+  text-shadow: 0 2px 8px rgba(36, 41, 46, 0.18);
   pointer-events: none;
   user-select: none;
 }
@@ -194,6 +190,7 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
 }
+
 .carousel-btn:hover {
   background: #f57224;
   color: #fff;
@@ -208,6 +205,7 @@ onUnmounted(() => {
   justify-content: center;
   gap: 8px;
 }
+
 .dot {
   width: 10px;
   height: 10px;
@@ -217,6 +215,7 @@ onUnmounted(() => {
   cursor: pointer;
   transition: background 0.2s;
 }
+
 .dot.active {
   background: #f57224;
 }
@@ -282,7 +281,7 @@ onUnmounted(() => {
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(36,41,46,0.07);
+  box-shadow: 0 2px 8px rgba(36, 41, 46, 0.07);
   transition: background 0.2s, transform 0.1s;
   font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
 }
@@ -297,6 +296,7 @@ onUnmounted(() => {
 }
 
 @media (max-width: 600px) {
+
   .carousel-container,
   .carousel {
     width: 98vw;
@@ -304,13 +304,16 @@ onUnmounted(() => {
     max-width: 100vw;
     height: 160px;
   }
+
   .login-card {
     max-width: 98vw;
     padding: 1.2rem 0.5rem;
   }
+
   .login-title {
     font-size: 1.3rem;
   }
+
   .carousel-text {
     font-size: 0.97rem;
     padding: 10px 10px 8px 10px;

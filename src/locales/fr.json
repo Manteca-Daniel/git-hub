@@ -73,7 +73,7 @@
     "proyecto_existente": "Souhaitez-vous télécharger un projet existant depuis votre ordinateur vers ce dépôt ?",
     "cantidad": "Quantité",
     "buscar_nombre_repo": "Nom du dépôt",
-    "buscar_nombre_repo_label" : "Trouve ton dépôt",
+    "buscar_nombre_repo_label": "Trouve ton dépôt",
     "buscar": "Rechercher",
     "buscando_repos": "Recherche de dépôts...",
     "anterior": "Précédent",
@@ -90,9 +90,9 @@
         "error": "Une erreur s'est produite lors de la recherche. Veuillez réessayer.",
         "fill_fields": "Veuillez remplir les deux champs."
     },
-    "iniciar_sesión_con_gitHub" : "Connectez-vous avec GitHub",
-    "login_con_gitHub" : "Connectez-vous avec GitHub",
-    "autenticando_con_gtihub" : "Authentification avec GitHub...",
+    "iniciar_sesión_con_gitHub": "Connectez-vous avec GitHub",
+    "login_con_gitHub": "Connectez-vous avec GitHub",
+    "autenticando_con_gtihub": "Authentification avec GitHub...",
     "git_organizar_proyectos": "Connectez-vous avec GitHub pour commencer à organiser vos projets et collaborer avec votre équipe.",
     "gestion_repos_tickets": "Gérez les dépôts et les tickets facilement et de manière centralisée.",
     "espacio_trabajo_git": "Accédez à votre espace de travail GitHub",
@@ -121,5 +121,11 @@
     "select_tipo_tickets": "Sélectionnez des types de tickets",
     "rellene_todos_campos": "Veuillez remplir tous les champs.",
     "anonimo": "anonyme",
-    "eliminar_ticket_confirmacion": "Êtes-vous sûr de vouloir supprimer ce ticket ?"
+    "eliminar_ticket_confirmacion": "Êtes-vous sûr de vouloir supprimer ce ticket ?",
+    "carrusel": {
+        "visualizar_gestionar_repos": "Affichez et gérez tous vos dépôts GitHub depuis un seul endroit.",
+        "search_repo_publico": "Recherchez n'importe quel dépôt public GitHub rapidement et facilement.",
+        "stats_detalles_repos": "Consultez les statistiques et les détails complets de chaque dépôt.",
+        "create_admin_tickets": "Créez et gérez facilement des tickets liés à vos dépôts."
+    }
 }

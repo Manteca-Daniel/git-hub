@@ -73,7 +73,7 @@
     "proyecto_existente": "Möchtest du ein bestehendes Projekt von deinem Computer in dieses Repository hochladen?",
     "cantidad": "Anzahl",
     "buscar_nombre_repo": "Name des Repositories",
-    "buscar_nombre_repo_label" : "Finde dein Repository",
+    "buscar_nombre_repo_label": "Finde dein Repository",
     "buscar": "Suchen",
     "buscando_repos": "Repositories werden gesucht...",
     "anterior": "Zurück",
@@ -90,9 +90,9 @@
         "error": "Bei der Suche ist ein Fehler aufgetreten. Bitte versuche es erneut.",
         "fill_fields": "Bitte fülle beide Felder aus."
     },
-    "iniciar_sesión_con_gitHub" : "Mit GitHub anmelden",
-    "login_con_gitHub" : "Mit GitHub anmelden",
-    "autenticando_con_gtihub" : "Authentifizierung mit GitHub …",
+    "iniciar_sesión_con_gitHub": "Mit GitHub anmelden",
+    "login_con_gitHub": "Mit GitHub anmelden",
+    "autenticando_con_gtihub": "Authentifizierung mit GitHub …",
     "git_organizar_proyectos": "Melde dich mit GitHub an, um deine Projekte zu organisieren und mit deinem Team zusammenzuarbeiten.",
     "gestion_repos_tickets": "Verwalte Repositories und Tickets einfach und zentral.",
     "espacio_trabajo_git": "Greife auf deinen GitHub-Arbeitsbereich zu",
@@ -121,5 +121,11 @@
     "select_tipo_tickets": "Wähle Tickettypen",
     "rellene_todos_campos": "Bitte fülle alle Felder aus.",
     "anonimo": "anonym",
-    "eliminar_ticket_confirmacion": "Bist du sicher, dass du dieses Ticket löschen möchtest?"
+    "eliminar_ticket_confirmacion": "Bist du sicher, dass du dieses Ticket löschen möchtest?",
+    "carrusel": {
+        "visualizar_gestionar_repos": "Zeige und verwalte all deine GitHub-Repositories an einem Ort.",
+        "search_repo_publico": "Durchsuche öffentliche GitHub-Repositories schnell und einfach.",
+        "stats_detalles_repos": "Sieh dir vollständige Statistiken und Details zu jedem Repository an.",
+        "create_admin_tickets": "Erstelle und verwalte ganz einfach Tickets, die mit deinen Repositories verknüpft sind."
+    }
 }
