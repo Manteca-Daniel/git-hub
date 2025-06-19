@@ -7,186 +7,247 @@
         </div>
 
         <div v-else>
-            <label class="label">{{ $t('select_repo') }}:</label>
-            <select v-model="selectedRepo" class="select">
-                <option disabled value="">-- {{ $t('select_repo') }} --</option>
-                <option v-for="repo in authStore.repos" :key="repo.id" :value="repo">
-                    {{ repo.name }}
-                </option>
-            </select>
+          <div v-if="!selectedRepo">
+            <div class="repo-select-visual">
+              <label class="label">{{ $t('select_repo') }}:</label>
+              <div class="filter-group">
+                  <label class="filter-label">{{ $t('lenguaje') }}</label>
+                  <select v-model="languageFilter" class="select filter-select">
+                    <option value="">{{ $t('all') }}</option>
+                    <option v-for="lang in uniqueLanguages" :key="lang" :value="lang">
+                      {{ lang }}
+                    </option>
+                  </select>
+                </div>
+              <div class="repo-grid">
+                <div
+                  v-for="repo in filteredRepos"
+                  :key="repo.id"
+                  :class="['repo-card', { selected: selectedRepo && selectedRepo.id === repo.id }]"
+                  @click="selectRepo(repo)"
+                  tabindex="0"
+                  @keydown.enter="selectRepo(repo)"
+                >
+                  <div class="repo-card-header">
+                    <span class="repo-icon">📦</span>
+                    <span
+                      class="repo-name"
+                      :title="repo.name"
+                    >{{ repo.name }}</span>
+                  </div>
+                  <div class="repo-meta">
+                    <span
+                      class="repo-visibility"
+                      :class="repo.private ? 'private' : 'public'"
+                    >
+                      <span v-if="repo.private">🔒 Private</span>
+                      <span v-else>🌐 Public</span>
+                    </span>
+                    
+                  </div>
+                  <div
+                      v-if="repo.language"
+                      class="repo-language"
+                      :title="repo.language"
+                    >
+                    <div class="repo-lang-icon">
+                      <span class="lang-dot" :style="{ background: languageColor(repo.language) }"></span>
+                      {{ repo.language }}
+                    </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-            <div v-if="selectedRepo">
-                <div class="ticket-header">
-                    <h3 class="subtitle">{{ $t('tickets_para') }} <span>{{ selectedRepo.name }}</span></h3>
-                    <button class="btn add-ticket-btn" @click="showAddTicket = true">
-                      <span class="add-icon">➕</span> {{ $t('add_ticket') }}
-                    </button>
-                    <div v-if="showAddTicket" class="modal-overlay">
-                        <div class="modal modern-modal">
-                            <div class="modal-header">
-                                <h3>📝 {{ $t('new_ticket') }}</h3>
-                                <button class="modal-close" @click="showAddTicket = false">✖</button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="modal-field">
-                                    <label>{{ $t('encabezado') }}</label>
-                                    <input v-model="newTicket.encabezado" class="edit-input" :placeholder="$t('encabezado')" />
-                                </div>
-                                <div class="modal-field">
-                                    <label>{{ $t('descripcion_issue') }}</label>
-                                    <textarea v-model="newTicket.descripcion" class="edit-input" :placeholder="$t('descripcion_issue')" rows="3"></textarea>
-                                </div>
-                                <div class="modal-field">
-                                    <label>{{ $t('propietario') }}</label>
-                                    <select v-model="newTicket.owner" class="edit-input">
-                                        <option value="" disabled>{{ $t('select_propietario') }}</option>
-                                        <option v-for="colaborador in authStore.collaborators.value" :key="colaborador.login" :value="colaborador.login">
-                                            {{ colaborador.login }}
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="modal-field">
-                                    <label>{{ $t('tipo_ticket') }}</label>
-                                    <select v-model="newTicket.idf_tipo_ticket" class="edit-input">
-                                        <option value="" disabled>{{ $t('select_tipo_ticket') }}</option>
-                                        <option v-for="tipoTicket in tiposTicketsStore.tiposTickets" :key="tipoTicket.id_tipo_ticket" :value="tipoTicket.id_tipo_ticket">
-                                            {{ tipoTicket.descripcion }}
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="modal-field">
-                                    <label>{{ $t('estado') }}</label>
-                                    <select v-model="newTicket.idf_tipo_estado" class="edit-input">
-                                        <option value="" disabled>{{ $t('select_estado') }}</option>
-                                        <option v-for="estado in estadosStore.estados" :key="estado.id_estado" :value="estado.id_estado">
-                                            {{ estado.descripcion }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="modal-actions">
-                                <button class="btn save" @click="addNewTicket">{{ $t('guardar') }}</button>
-                                <button class="btn cancel" @click="showAddTicket = false">{{ $t('cancelar') }}</button>
-                            </div>
+          <div v-if="selectedRepo">
+            <button class="btn volver-btn" @click="selectedRepo = ''">
+              <span class="volver-icon-svg" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M12.5 16L7.5 10L12.5 4" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              {{ $t('volver_a_repos') }}
+            </button>
+            <div class="ticket-header">
+                <h3 class="subtitle">{{ $t('tickets_para') }} <span>{{ selectedRepo.name }}</span></h3>
+                <button class="btn add-ticket-btn" @click="showAddTicket = true">
+                  <span class="add-icon">➕</span> {{ $t('add_ticket') }}
+                </button>
+                <div v-if="showAddTicket" class="modal-overlay">
+                    <div class="modal modern-modal">
+                        <div class="modal-header">
+                            <h3>📝 {{ $t('new_ticket') }}</h3>
+                            <button class="modal-close" @click="showAddTicket = false">✖</button>
                         </div>
-                    </div>
-                </div>
-                <div class="ticket-filters modern-filters">
-                  <div class="filters-row">
-                    <div class="filter-group">
-                      <label class="filter-label">{{ $t('user') }}</label>
-                      <select v-model="userFilter" class="select filter-select">
-                        <option value="">{{ $t('all') }}</option>
-                        <option v-for="colaborador in authStore.collaborators.value" :key="colaborador.login" :value="colaborador.login">
-                          {{ colaborador.login }}
-                        </option>
-                      </select>
-                    </div>
-                    <div class="filter-group">
-                      <label class="filter-label">{{ $t('estado') }}</label>
-                      <div class="estado-checkbox-group modern-checkbox-group">
-                        <label v-for="estado in estadosStore.estados" :key="estado.id_estado" class="checkbox-label modern-checkbox">
-                          <input type="checkbox" :value="estado.id_estado" v-model="estadoRepoFilter" />
-                          <span class="checkmark"></span>
-                          {{ estado.descripcion }}
-                        </label>
-                      </div>
-                    </div>
-                    <div class="filter-group">
-                      <label class="filter-label">{{ $t('ordenar_por') }}</label>
-                      <select v-model="orderBy" class="select order-select">
-                        <option value="">{{ $t('sin_orden') }}</option>
-                        <option value="estado">{{ $t('estado') }}</option>
-                        <option value="encabezado">{{ $t('encabezado') }}</option>
-                        <option value="usuario">{{ $t('user') }}</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="filters-actions">
-                    <button class="btn reset-filters" @click="resetFilters">🔄 {{ $t('restablecer_flitros') }}</button>
-                  </div>
-                </div>
-                <ul class="ticket-list">
-                  <template v-if="filteredTickets.length === 0">
-                    <li class="no-results">{{ $t('no_tickets_flitros') }}</li>
-                  </template>
-                  <template v-else>
-                    <li v-for="(ticket, index) in filteredTickets" :key="index" :class="['ticket-card', estadoColorClase(ticket.idf_tipo_estado)]">
-                        <div class="ticket-content">
-                            <template v-if="editIndex === index">
-                                <template v-if="editIndex === index">
-                                <input v-model="editTicket.encabezado" class="edit-input" :placeholder="$t('encabezado')" />
-                                <input v-model="editTicket.descripcion" class="edit-input" :placeholder="$t('descripcion_issue')" />
-                                <select v-model="editTicket.owner" class="edit-input" :placeholder="$t('propietario')">
+                        <div class="modal-body">
+                            <div class="modal-field">
+                                <label>{{ $t('encabezado') }}</label>
+                                <input v-model="newTicket.encabezado" class="edit-input" :placeholder="$t('encabezado')" />
+                            </div>
+                            <div class="modal-field">
+                                <label>{{ $t('descripcion_issue') }}</label>
+                                <textarea v-model="newTicket.descripcion" class="edit-input" :placeholder="$t('descripcion_issue')" rows="3"></textarea>
+                            </div>
+                            <div class="modal-field">
+                                <label>{{ $t('propietario') }}</label>
+                                <select v-model="newTicket.owner" class="edit-input">
+                                    <option value="" disabled>{{ $t('select_propietario') }}</option>
                                     <option v-for="colaborador in authStore.collaborators.value" :key="colaborador.login" :value="colaborador.login">
                                         {{ colaborador.login }}
                                     </option>
                                 </select>
-                            </template>
-    
-                            </template>
-                            <template v-else>
-                                <div class="ticket-title">
-                                    <h3><strong>{{ ticket.encabezado }}</strong></h3> 
-                                </div>
-                                <div class="ticket-description">
-                                    <strong>{{ $t('descripcion_issue') }}:</strong> {{ ticket.descripcion }}
-                                </div>
-                                <div class="ticket-author">
-                                    <strong>{{ $t('creado_por') }}:</strong>
-                                    <span class="user-icon" title="Asignado">
-                                      <template v-if="ticket.owner === 'franxu99'">⭐</template>
-                                      <template v-else-if="ticket.owner === 'Manteca-Daniel'">🦸‍♂️</template>
-                                      <template v-else>👤</template>
-                                    </span>
-                                    {{ ticket.owner }}
-                                </div>
-                                <div class="ticket-repo">
-                                    <strong>{{ $t('repo') }}:</strong> {{ ticket.repositorio }}
-                                </div>
-                            </template>
-                        </div>
-                        
-                        <div class="ticket-actions">
-                            <template v-if="editIndex === index">
-                            </template>
-                            <template v-else>
-                                <div class="ticket-details">
-                                    <select v-model="ticket.idf_tipo_estado" :class="['select-estado', estadoColorClase(ticket.idf_tipo_estado)]" @change="$event.target.blur(), onEstadoChange(ticket, index)">
-                                        <option value="" disabled>{{ $t('select_un_estado') }}</option>
-                                        <option v-for="estado in estadosStore.estados" :key="estado.id_estado" :value="estado.id_estado">
-                                            {{ estado.descripcion }}
-                                        </option>
-                                    </select>
-                                    <select v-model="ticket.idf_tipo_ticket" class="select-tipo-ticket" @change="$event.target.blur(), startEdit(index, ticket), saveEdit(ticket.id_ticket)">
-                                        <option value="" disabled>{{ $t('select_tipo_tickets') }}</option>
-                                        <option v-for="tipoTicket in tiposTicketsStore.tiposTickets" :key="tipoTicket.id_tipo_ticket" :value="tipoTicket.id_tipo_ticket">
-                                            {{ tipoTicket.descripcion }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </template>
-                            <div class="ticket-actions-buttons">
-                                <template v-if="editIndex === index">
-                                    <button @click="saveEdit(ticket.id_ticket)" class="btn save">💾</button>
-                                    <button @click="cancelEdit" class="btn cancel">✖</button>
-                                </template>
-                                <template v-else>
-                                    <button @click="startEdit(index, ticket)" class="btn edit">✏️</button>
-                                    <button @click="deleteTicket(index)" class="btn delete">🗑️</button>
-                                </template>
+                            </div>
+                            <div class="modal-field">
+                                <label>{{ $t('tipo_ticket') }}</label>
+                                <select v-model="newTicket.idf_tipo_ticket" class="edit-input">
+                                    <option value="" disabled>{{ $t('select_tipo_ticket') }}</option>
+                                    <option v-for="tipoTicket in tiposTicketsStore.tiposTickets" :key="tipoTicket.id_tipo_ticket" :value="tipoTicket.id_tipo_ticket">
+                                        {{ tipoTicket.descripcion }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="modal-field">
+                                <label>{{ $t('estado') }}</label>
+                                <select v-model="newTicket.idf_tipo_estado" class="edit-input">
+                                    <option value="" disabled>{{ $t('select_estado') }}</option>
+                                    <option v-for="estado in estadosStore.estados" :key="estado.id_estado" :value="estado.id_estado">
+                                        {{ estado.descripcion }}
+                                    </option>
+                                </select>
                             </div>
                         </div>
-                    </li>
-                  </template>
-                </ul>
+                        <div class="modal-actions">
+                            <button class="btn save" @click="addNewTicket">{{ $t('guardar') }}</button>
+                            <button class="btn cancel" @click="showAddTicket = false">{{ $t('cancelar') }}</button>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <div class="ticket-filters modern-filters">
+              <div class="filters-row">
+                <div class="filter-group">
+                  <label class="filter-label">{{ $t('user') }}</label>
+                  <select v-model="userFilter" class="select filter-select">
+                    <option value="">{{ $t('all') }}</option>
+                    <option v-for="colaborador in authStore.collaborators.value" :key="colaborador.login" :value="colaborador.login">
+                      {{ colaborador.login }}
+                    </option>
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label class="filter-label">{{ $t('estado') }}</label>
+                  <div class="estado-checkbox-group modern-checkbox-group">
+                    <label v-for="estado in estadosStore.estados" :key="estado.id_estado" class="checkbox-label modern-checkbox">
+                      <input type="checkbox" :value="estado.id_estado" v-model="estadoRepoFilter" />
+                      <span class="checkmark"></span>
+                      {{ estado.descripcion }}
+                    </label>
+                  </div>
+                </div>
+                <div class="filter-group">
+                  <label class="filter-label">{{ $t('ordenar_por') }}</label>
+                  <select v-model="orderBy" class="select filter-select">
+                    <option value="">{{ $t('sin_orden') }}</option>
+                    <option value="estado">{{ $t('estado') }}</option>
+                    <option value="encabezado">{{ $t('encabezado') }}</option>
+                    <option value="usuario">{{ $t('user') }}</option>
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label class="filter-label">{{ $t('filtrar_encabezado') }}</label>
+                  <input
+                    v-model="encabezadoFilter"
+                    type="text"
+                    class="edit-input"
+                  />
+                </div>
+              </div>
+              <div class="filters-actions">
+                <button class="btn reset-filters" @click="resetFilters">🔄 {{ $t('restablecer_flitros') }}</button>
+              </div>
+            </div>
+            <ul class="ticket-list">
+              <template v-if="filteredTickets.length === 0">
+                <li class="no-results">{{ $t('no_tickets_flitros') }}</li>
+              </template>
+              <template v-else>
+                <li v-for="(ticket, index) in filteredTickets" :key="index" :class="['ticket-card', estadoColorClase(ticket.idf_tipo_estado)]">
+                    <div class="ticket-content">
+                        <template v-if="editIndex === index">
+                            <template v-if="editIndex === index">
+                            <input v-model="editTicket.encabezado" class="edit-input" :placeholder="$t('encabezado')" />
+                            <input v-model="editTicket.descripcion" class="edit-input" :placeholder="$t('descripcion_issue')" />
+                            <select v-model="editTicket.owner" class="edit-input" :placeholder="$t('propietario')">
+                                <option v-for="colaborador in authStore.collaborators.value" :key="colaborador.login" :value="colaborador.login">
+                                    {{ colaborador.login }}
+                                </option>
+                            </select>
+                        </template>
+    
+                        </template>
+                        <template v-else>
+                            <div class="ticket-title">
+                                <h3><strong>{{ ticket.encabezado }}</strong></h3> 
+                            </div>
+                            <div class="ticket-description">
+                                <strong>{{ $t('descripcion_issue') }}:</strong> {{ ticket.descripcion }}
+                            </div>
+                            <div class="ticket-author">
+                                <strong>{{ $t('creado_por') }}:</strong>
+                                <span class="user-icon" title="Asignado">
+                                  <template v-if="ticket.owner === 'franxu99'">⭐</template>
+                                  <template v-else-if="ticket.owner === 'Manteca-Daniel'">🦸‍♂️</template>
+                                  <template v-else>👤</template>
+                                </span>
+                                {{ ticket.owner }}
+                            </div>
+                            <div class="ticket-repo">
+                                <strong>{{ $t('repo') }}:</strong> {{ ticket.repositorio }}
+                            </div>
+                        </template>
+                    </div>
+                    
+                    <div class="ticket-actions">
+                        <template v-if="editIndex === index">
+                        </template>
+                        <template v-else>
+                            <div class="ticket-details">
+                                <select v-model="ticket.idf_tipo_estado" :class="['select-estado', estadoColorClase(ticket.idf_tipo_estado)]" @change="$event.target.blur(), onEstadoChange(ticket, index)">
+                                    <option value="" disabled>{{ $t('select_un_estado') }}</option>
+                                    <option v-for="estado in estadosStore.estados" :key="estado.id_estado" :value="estado.id_estado">
+                                        {{ estado.descripcion }}
+                                    </option>
+                                </select>
+                                <select v-model="ticket.idf_tipo_ticket" class="select-tipo-ticket" @change="$event.target.blur(), startEdit(index, ticket), saveEdit(ticket.id_ticket)">
+                                    <option value="" disabled>{{ $t('select_tipo_tickets') }}</option>
+                                    <option v-for="tipoTicket in tiposTicketsStore.tiposTickets" :key="tipoTicket.id_tipo_ticket" :value="tipoTicket.id_tipo_ticket">
+                                        {{ tipoTicket.descripcion }}
+                                    </option>
+                                </select>
+                            </div>
+                        </template>
+                        <div class="ticket-actions-buttons">
+                            <template v-if="editIndex === index">
+                                <button @click="saveEdit(ticket.id_ticket)" class="btn save">💾</button>
+                                <button @click="cancelEdit" class="btn cancel">✖</button>
+                            </template>
+                            <template v-else>
+                                <button @click="startEdit(index, ticket)" class="btn edit">✏️</button>
+                                <button @click="deleteTicket(index)" class="btn delete">🗑️</button>
+                            </template>
+                        </div>
+                    </div>
+                </li>
+              </template>
+            </ul>
+          </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, reactive, watch, computed } from "vue";
+import { ref, reactive, watch, computed, onMounted } from "vue";
 import { useAuthStore } from "@/stores/authStore";
 import  useTicketsStore  from "@/stores/ticketsStore"; 
 import useTiposTicketsStore from "@/stores/tiposTicketsStore";
@@ -240,6 +301,16 @@ const editTicket = ref({
 const userFilter = ref("");
 const estadoRepoFilter = ref([]);
 const orderBy = ref("");
+const languageFilter = ref("");
+const encabezadoFilter = ref("");
+
+const filteredRepos = computed(() => {
+  let repos = authStore.repos;
+  if (languageFilter.value) {
+    repos = repos.filter(repo => repo.language === languageFilter.value);
+  }
+  return repos;
+});
 
 const filteredTickets = computed(() => {
   let filtered = ticketsStore.tickets || [];
@@ -248,6 +319,9 @@ const filteredTickets = computed(() => {
   }
   if (userFilter.value) {
     filtered = filtered.filter(ticket => ticket.owner === userFilter.value);
+  }
+  if (encabezadoFilter.value) {
+    filtered = filtered.filter(ticket => ticket.encabezado.toLowerCase().includes(encabezadoFilter.value.toLowerCase()));
   }
   // Ordenar
   if (orderBy.value === "estado") {
@@ -268,6 +342,14 @@ function toggleDropdown(e) {
     select.size = 1;
   }
 }
+
+const uniqueLanguages = computed(() => {
+  const langs = authStore.repos
+    .map(repo => repo.language)
+    .filter(lang => !!lang); // Elimina null/undefined
+  console.log(langs);
+  return [...new Set(langs)];
+});
 
 async function loadTickets(urlRepo) {
     try {
@@ -356,6 +438,8 @@ function resetFilters() {
   userFilter.value = "";
   estadoRepoFilter.value = [];
   orderBy.value = "";
+  languageFilter.value = "";
+  encabezadoFilter.value = "";
 }
 
 function onEstadoChange(ticket, index) {
@@ -363,6 +447,34 @@ function onEstadoChange(ticket, index) {
     editTicketId.value = ticket.id_ticket;
     startEdit(index, ticket);
     saveEdit();
+}
+
+function selectRepo(repo) {
+  selectedRepo.value = repo;
+}
+
+function languageColor(lang) {
+  const colors = {
+    JavaScript: "#f1e05a",
+    Python: "#3572A5",
+    Java: "#b07219",
+    TypeScript: "#3178c6",
+    HTML: "#e34c26",
+    CSS: "#563d7c",
+    Vue: "#41b883",
+    C: "#1f6feb",
+    'C#': "#1f6feb",
+    CSharp: "#178600",
+    Go: "#00ADD8",
+    PHP: "#4F5D95",
+    Ruby: "#701516",
+    Shell: "#89e051",
+    Swift: "#ffac45",
+    Kotlin: "#A97BFF",
+    Dart: "#00B4AB",
+    // ...añade más si quieres
+  };
+  return colors[lang] || "#bbb";
 }
 
 </script>
@@ -410,6 +522,10 @@ function onEstadoChange(ticket, index) {
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 16px;
+}
+
+.ticket-details > select {
+  cursor: pointer ;
 }
 
 .ticket-list {
@@ -563,6 +679,47 @@ function onEstadoChange(ticket, index) {
     margin: 0;
 }
 
+.volver-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(90deg, #3182ce 0%, #1f6feb 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.08rem;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(31,111,235,0.10);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.13s, box-shadow 0.2s;
+  padding: 10px 26px 10px 18px;
+  margin-bottom: 18px;
+  margin-top: 8px;
+  letter-spacing: 0.2px;
+}
+
+.volver-btn:hover {
+  background: linear-gradient(90deg, #1f6feb 0%, #3182ce 100%);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 4px 18px rgba(31,111,235,0.18);
+}
+
+.volver-icon-svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eb741f;
+  border-radius: 50%;
+  width: 2em;
+  height: 2em;
+  margin-right: 6px;
+  box-shadow: 0 1px 4px rgba(31,111,235,0.13);
+}
+
+.volver-icon-svg svg {
+  display: block;
+  margin: auto;
+}
 .ticket-description,
 .ticket-author,
 .ticket-repo {
@@ -891,11 +1048,37 @@ select.estado-default:not(:focus) {
   margin-bottom: 8px;
 }
 .filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  margin-bottom: 18px;
   min-width: 180px;
+  position: relative;
 }
+
+.filter-label {
+  font-weight: 600;
+  color: #1f6feb;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.filter-select {
+  padding: 10px 38px 10px 14px;
+  border-radius: 10px;
+  border: 1.5px solid #e2e8f0;
+  font-size: 1rem;
+  background: #f7fafd url('data:image/svg+xml;utf8,<svg fill="none" stroke="%231f6feb" stroke-width="2" viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><path d="M19 9l-7 7-7-7"/></svg>') no-repeat right 12px center/20px 20px;
+  color: #222;
+  transition: border 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(31,111,235,0.07);
+  appearance: none;
+  cursor: pointer;
+}
+
+.filter-select:focus {
+  border-color: #3182ce;
+  outline: none;
+  box-shadow: 0 0 0 2px #c3e0fa;
+}
+
 .filters-actions {
   display: flex;
   align-items: flex-end;
@@ -1023,6 +1206,98 @@ select.estado-default:not(:focus) {
   font-size: 1.1em;
   color: #1f6feb;
   vertical-align: middle;
+}
+.repo-select-visual {
+  margin-bottom: 24px;
+}
+.repo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+.repo-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+.repo-card.selected {
+  border-color: #3182ce;
+  box-shadow: 0 4px 12px rgba(31, 111, 235, 0.15);
+}
+.repo-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.repo-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  min-width: 0;
+}
+
+.repo-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3748;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.repo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.repo-language {
+  font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3748;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.repo-lang-icon{
+  width: 100%;
+  padding: 2px 4px;
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  /* justify-content: right; */
+}
+
+.lang-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+  border: 1.5px solid #fff;
+  box-shadow: 0 1px 2px #eee;
+}
+
+@media (max-width: 700px) {
+  .repo-name {
+    max-width: 60vw;
+    font-size: 1rem;
+  }
 }
 </style>
 

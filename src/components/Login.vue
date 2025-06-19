@@ -102,12 +102,32 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
 }
+@media (max-width: 1700px) {
+  .login-bg {
+  min-height: 65vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  flex-direction: column;
+  gap: 2rem;
+}
+
+}
 
 .login-content {
   display: flex;
   align-items: center;
   gap: 2.5rem;
   width: 30%;
+}
+
+@media (max-width: 1700px) {
+.login-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  width: 100%;
+}
+
 }
 
 .carousel-container {
@@ -118,6 +138,13 @@ onUnmounted(() => {
   justify-content: center;
   align-items: center;
   margin-bottom: 0.5rem;
+}
+
+@media (max-width: 590px) {
+.carousel-container{
+  display: none;
+}
+
 }
 
 .carousel {

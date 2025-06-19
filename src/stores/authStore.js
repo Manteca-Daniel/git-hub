@@ -106,7 +106,7 @@ export const useAuthStore = defineStore("auth", {
         if (!response.ok) {
           throw new Error(`Error al actualizar descripción: ${response.statusText}`);
         }
-
+        await this.fetchUser();
         console.log(`Descripción de ${repoName} actualizada correctamente.`);
       } catch (error) {
         console.error("Error en la actualización:", error);

@@ -129,7 +129,7 @@ import { useAuthStore } from '../stores/authStore';
 
 const authStore = useAuthStore();
 const user = computed(() => authStore.user);
-const repos = computed(() => authStore.repos);
+const repos = ref([]);
 const logout = () => authStore.logout();
 
 const newRepoName = ref('');
@@ -213,7 +213,7 @@ const saveDescription = async (repo) => {
     await authStore.updateRepoDescription(repo.name, repo.newDescription);
     repo.description = repo.newDescription;
     repo.editing = false;
-    repos.value = await authStore.fetchRepos();
+    await authStore.fetchRepos();
   } catch (error) {
     console.error("Error actualizando la descripción:", error);
   }
@@ -221,6 +221,7 @@ const saveDescription = async (repo) => {
 
 onMounted(async () => {
   await authStore.fetchUser();
+  repos.value = await authStore.fetchRepos();
 });
 </script>
 
