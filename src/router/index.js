@@ -5,6 +5,7 @@ import SearchRepo from '../views/SearchView.vue';
 import Token from '../views/TokenView.vue';
 import Tickets from '../views/TicketsView.vue';
 import CallbackView from '../views/CallbackView.vue';
+import NotFound from '../components/NotFound.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -53,7 +54,12 @@ const router = createRouter({
       name: 'repo',
       component: RepoDetails,
       props: true
-    },    
+    },   
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      component: NotFound
+    } 
   ],
 })
 

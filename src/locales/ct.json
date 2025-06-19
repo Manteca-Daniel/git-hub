@@ -127,5 +127,10 @@
         "search_repo_publico": "Cerca qualsevol repositori públic de GitHub de manera ràpida i senzilla.",
         "stats_detalles_repos": "Consulta les estadístiques i els detalls complets de cada repositori.",
         "create_admin_tickets": "Crea i gestiona tiquets vinculats als teus repositoris fàcilment."
-    }
+    },
+    "not_found" : {
+        "volver_inicio" : "Tornar a l'inici",
+        "pagina_no_existe" : "La pàgina que cerques no existeix o ha estat moguda."
+    },
+    "volver_a_repos" : "Tornar"
 }

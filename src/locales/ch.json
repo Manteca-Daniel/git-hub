@@ -127,5 +127,10 @@
         "search_repo_publico": "快速轻松地搜索任何公共 GitHub 仓库。",
         "stats_detalles_repos": "查看每个仓库的完整统计数据和详细信息。",
         "create_admin_tickets": "轻松创建和管理与你的仓库相关的工单。"
-    }
+    },
+    "not_found" : {
+        "volver_inicio" : "回到頂部",
+        "pagina_no_existe" : "您要尋找的頁面不存在或已被移動。"
+    },
+    "volver_a_repos" : "返回"
 }

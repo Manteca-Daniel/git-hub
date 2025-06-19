@@ -127,5 +127,10 @@
         "search_repo_publico": "Pesquise qualquer repositório público do GitHub de forma rápida e fácil.",
         "stats_detalles_repos": "Consulte estatísticas e detalhes completos de cada repositório.",
         "create_admin_tickets": "Crie e gerencie facilmente tickets vinculados aos seus repositórios."
-    }
+    },
+    "not_found" : {
+        "volver_inicio" : "Voltar ao topo",
+        "pagina_no_existe" : "A página que você procura não existe ou foi movida."
+    },
+    "volver_a_repos" : "Retornar"
 }

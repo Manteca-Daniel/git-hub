@@ -127,5 +127,10 @@
         "search_repo_publico": "Durchsuche öffentliche GitHub-Repositories schnell und einfach.",
         "stats_detalles_repos": "Sieh dir vollständige Statistiken und Details zu jedem Repository an.",
         "create_admin_tickets": "Erstelle und verwalte ganz einfach Tickets, die mit deinen Repositories verknüpft sind."
-    }
+    },
+    "not_found" : {
+        "volver_inicio" : "Zurück zum Anfang",
+        "pagina_no_existe" : "Die gesuchte Seite existiert nicht oder wurde verschoben."
+    },
+    "volver_a_repos" : "Zurückkehren"
 }
