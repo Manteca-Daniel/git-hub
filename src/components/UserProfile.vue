@@ -124,7 +124,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useAuthStore } from '../stores/authStore';
 
 const authStore = useAuthStore();
@@ -147,7 +147,10 @@ const createRepo = async () => {
   const repoName = newRepoName.value.trim();
   await authStore.createRepo(repoName);
 
-  // Asegúrate de que user y login están definidos
+  // 🔄 Actualizar repos y usuario después de crear
+  repos.value = await authStore.fetchRepos();
+  user.value = await authStore.fetchUser(); // <- ESTA LÍNEA ES IMPORTANTE
+
   const username = user.value?.login;
   const repoUrl = username ? `https://github.com/${username}/${repoName}.git` : null;
 
@@ -199,8 +202,14 @@ function downloadScript(content, filename) {
 const deleteRepo = async (repoName) => {
   const confirmed = confirm("¿Estás seguro de que quieres eliminar este repositorio? Esta acción no se puede deshacer.");
   if (!confirmed) return;
-  await authStore.deleteRepo(repoName);
-  repos.value = await authStore.fetchRepos();
+
+  try {
+    await authStore.deleteRepo(repoName);
+    repos.value = repos.value.filter(repo => repo.name !== repoName);
+    await authStore.fetchUser(); // 🔄 Actualizar los datos del usuario también
+  } catch (error) {
+    console.error("Error eliminando el repositorio:", error);
+  }
 };
 
 const editDescription = async (repo) => {
@@ -222,6 +231,12 @@ const saveDescription = async (repo) => {
 onMounted(async () => {
   await authStore.fetchUser();
   repos.value = await authStore.fetchRepos();
+});
+
+onUnmounted(() => {
+  repos.value = [];
+  newRepoName.value = '';
+  searchQuery.value = '';
 });
 </script>
 
